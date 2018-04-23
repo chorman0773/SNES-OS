@@ -1,6 +1,7 @@
 #ifndef __stdlib_h_2018_04_17_13_12
 #define __stdlib_h_2018_04_17_13_12
-#include <stddef.h>
+#include "stddef.h"
+typedef unsigned long size_t;
 #ifdef __cplusplus
 extern "C"{
 #endif

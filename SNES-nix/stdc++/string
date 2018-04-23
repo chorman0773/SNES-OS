@@ -1,0 +1,11 @@
+
+namespace std{
+    template<typename T> class basic_string{
+        int len;
+        T* content;
+    public:
+        
+    };
+
+    using string = basic_string<char>;
+};

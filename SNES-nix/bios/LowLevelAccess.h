@@ -3,8 +3,8 @@
 
 #include "BIOS.h"
 
-__nativedecl int getAccessMode()NATIVECALL;
-__nativedecl void checkAccess(int)NATIVECALL;
+__nativedecl int getAccessMode();
+__nativedecl void checkAccess(int);
 
 
 

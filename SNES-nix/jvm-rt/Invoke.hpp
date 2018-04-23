@@ -2,8 +2,10 @@
 #define __Invoke_hpp_2018_04_23_09_11
 #include <memory>
 #include <cstdint>
+#include <stdint.h>
 #include <initializer_list>
 using std::shared_ptr;
+using std::initializer_list;
 namespace java{
     class Class; 
     class ReferencePtr;
@@ -13,12 +15,15 @@ namespace java{
 	class PrimitiveType;
 	class SmallPrimitiveType;
 	class ArrayType;
+    class Thread;
     
 	enum class StackValueType{
 		INT, FLOAT, REFERENCE, 
 		LONG, DOUBLE, TOP,
 		RETURNADDRESS, INVALID
 	}uint8_t;
+    
+    enum class InvocationType;
 	
 	enum class CompareOp{
 		LT, LE, EQ, NE, GE, GT
@@ -89,6 +94,7 @@ namespace java{
         Invocation* returnTarget;
         int pc;
         MethodDescriptor& desc;
+        Thread& execThread;
     public:
         Invocation(MethodDescriptor&,Invocation*);
         StackFrame& getCurrentFrame();
@@ -104,6 +110,12 @@ namespace java{
         uint16_t read16();
         uint32_t read32();
         
+        void dup();
+        void dup_x();
+        void dup2();
+        void swap();
+        void del();
+        
         void pushInt(int32_t);
         int32_t popInt();
         void pushFloat(float);
@@ -114,6 +126,8 @@ namespace java{
         double popDouble();
         void pushReference(shared_ptr<ReferencePtr>);
         shared_ptr<ReferencePtr> popReference();
+        void setMonitor(shared_ptr<ReferencePtr>);
+        void clearMonitor();
         
         void setInt(int,int32_t);
         int32_t getInt(int);
@@ -136,15 +150,16 @@ namespace java{
 		bool isValid();
 	};
 	
-	class VerificationState{
+	class ValidationState{
 		MethodDescriptor& desc;
 		int classFileVersion;
 		int maxStack;
 		int maxLocals;
 		int sp;
+        int pc;
 		VerificationValue vstack[256];
 	public:
-		VerificationState(MethodDescriptor&);
+		ValidationState(MethodDescriptor&);
 		bool canPop(initializer_list<VerificationValue>&);
 		bool canPush(initializer_list<VerificationValue>&);
 		bool canReplace(initializer_list<VerificationValue>&,initializer_list<VerificationValue>&);
@@ -159,6 +174,9 @@ namespace java{
 		bool canDup();
 		bool canDupX(int);
 		bool canDup2();
+        bool canSwap();
+        bool canJsr();
+        bool canInvokeNonVirtual();
 		uint8_t read8();
         uint16_t read16();
         uint32_t read32();
@@ -253,7 +271,7 @@ namespace java{
 		
 		class LoadValue final:public Instruction{
 			StackValueType target;
-		public
+        public:
 			LoadValue(StackValueType);
 			void apply(Invocation&);
 			bool validate(ValidationState&);
@@ -275,7 +293,7 @@ namespace java{
 		};
         class StoreValue final:public Instruction{
 			StackValueType target;
-		public
+        public:
 			StoreValue(StackValueType);
 			void apply(Invocation&);
 			bool validate(ValidationState&);
@@ -420,7 +438,77 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
+        
+        
+        
+        class InvokeInstruction final:public Instruction{
+            InvocationType type;
+        public:
+            InvokeInstruction(InvocationType);
+            void apply(Invocation&);
+			bool validate(ValidationState&);
+        };
+        
+        class JsrInstruction final:public Instruction{
+        public:
+            void apply(Invocation&);
+			bool validate(ValidationState&);
+        };
+        class RetInstruction final:public Instruction{
+        public:
+            void apply(Invocation&);
+			bool validate(ValidationState&);
+        };
+
+        class ImplDepInstruction final:public Instruction{
+            int key;
+        public:
+            ImplDepInstruction(int);
+            void apply(Invocation&);
+			bool validate(ValidationState&);
+        };
+        class BreakpointInstruction final:public Instruction{
+        public:
+            void apply(Invocation&);
+			bool validate(ValidationState&);
+        };
+        
+        class SwapInstruction final:public Instruction{
+        public:
+            void apply(Invocation&);
+			bool validate(ValidationState&);
+        };
+        
+        class MonitorEnter final:public Instruction{
+        public:
+            void apply(Invocation&);
+			bool validate(ValidationState&);
+        };
+        class MonitorExit final:public Instruction{
+        public:
+            void apply(Invocation&);
+			bool validate(ValidationState&);
+        };
+        class PopInstruction final:public Instruction{
+            int num;
+        public:
+            PopInstruction(int);
+            void apply(Invocation&);
+			bool validate(ValidationState&);
+        };
 		
+        class MultiANewArray final:public Instruction{
+        public:
+            void apply(Invocation&);
+			bool validate(ValidationState&);
+        };
+        
+        class NewInstruction final:public Instruction{
+        public:
+            void apply(Invocation&);
+			bool validate(ValidationState&);
+        };
+        
     };
   
 };

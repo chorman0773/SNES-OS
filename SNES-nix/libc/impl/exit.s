@@ -1,9 +1,9 @@
-    ;exit(int) attribute noreturn
+    ;exit(int) noreturn
 exit:
     LDA 32
     BRK
     
-    ;abort() attribute noreturn
+    ;abort() noreturn
 abort:
     LDA 33
     BRK
@@ -19,3 +19,4 @@ atExit:
     LDA #0
     STA ax2
     JSR (long) syscall
+    RTL

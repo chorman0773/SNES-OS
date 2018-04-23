@@ -9,15 +9,15 @@
 	STZ $420b ;Stop any DMA
 	STZ $420c ;Stop any HDMA
 	LDA 0 ;Loop  and clear memory
-loop:
+reset_loop:
 	TAX
 	EOR A, #$FFFF
-	IFNZ exit
+	IFNZ reset_exit
 	STZ $7e:0000,X
 	TXA
 	SUB A, #1
-	BRA loop
-exit:
+	BRA reset_loop
+reset_exit:
 	JMP bios ;Jump to the bios
 	
 	

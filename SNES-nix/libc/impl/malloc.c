@@ -15,7 +15,7 @@ void* malloc(size_t size){
     void* out = NULL;
     block* next = heapBlock;
     int nLen = heapBlock->size;
-    unsigned heapPos = (unsigned) heap;
+    unsigned heapPos = ((unsigned) heap)-(unsigned)heapBlock;
     int i;
     for(i = 0;i<32;i++){
        if(heapBlock->size>=size){

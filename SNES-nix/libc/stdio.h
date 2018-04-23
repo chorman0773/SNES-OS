@@ -1,10 +1,9 @@
 #ifndef __stdio_h_2018_04_20_11_39
 #define __stdio_h_2018_04_20_11_39
-
 #ifdef __cplusplus
 extern "C"{
 #endif
-
+    
 #define EOF (-1)
 #define BUFSIZ 512
     
@@ -22,21 +21,24 @@ extern "C"{
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdarg.h>
+    
+
 typedef uint64_t pos_t;
 
-struct _iobuff{
+typedef struct _iobuff{
     int fd;
     uint64_t filePos;
     unsigned short mode;
     unsigned short status;
     int buffAmm;
     unsigned char* buffer;
-};
-typedef _iobuff FILE;
+} FILE;
 
 extern FILE* const stdin;
 extern FILE* const stdout;
 extern FILE* const stderr;
+
+
 FILE* fopen(const char*,const char*);
 FILE* freopen(const char*,const char*,FILE*);
 void fflush(FILE*);
@@ -68,9 +70,9 @@ int vprintf(const char*,va_list);
 int vfprintf(FILE*,const char*,va_list);
 int vsprintf(char*,const char*,va_list);
 
-void printf(const char*,...);
-void fprintf(FILE*,const char*,...);
-void sprintf(FILE*,const char*,...);
+int printf(const char*,...);
+int fprintf(FILE*,const char*,...);
+int sprintf(FILE*,const char*,...);
 
 int scanf(const char*,...); 
 int fscanf(FILE*,const char*,...);

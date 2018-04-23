@@ -1,4 +1,6 @@
-
+#ifndef __SNESnix_thread_h_2018_04_23_14_07
+#define __SNESnix_thread_h_2018_04_23_14_07
+#include <bios/BIOS.h>
 typedef enum _state{
 	STOPPED, STARTED, UNINITIZED, WAITING
 }state;
@@ -14,19 +16,21 @@ typedef struct _thread{
 	unsigned short x;
 	unsigned short y;
 	unsigned char db;
+    unsigned char flags;
 	state st;
 }* thread;
 
 
-extern thread activeThreads[];
 
 typedef void(*threadCall)(void);
 
-void threadNew(thread*);
-void threadStart(thread,threadCall);
-void threadWait(thread);
-void currentThread(thread*);
-void threadResume(thread);
-void threadStop(thread);
-void threadKill(thread);
-void threadInterupt(thread);
+__nativedecl void threadNew(thread*);
+__nativedecl void threadStart(thread,threadCall);
+__nativedecl void threadWait(thread);
+__nativedecl void currentThread(thread*);
+__nativedecl void threadResume(thread);
+__nativedecl void threadStop(thread);
+__nativedecl void threadKill(thread);
+__nativedecl void threadInterupt(thread);
+
+#endif
