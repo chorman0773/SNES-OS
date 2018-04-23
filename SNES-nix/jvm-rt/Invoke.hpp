@@ -142,6 +142,12 @@ namespace java{
             LConstInstruction(long);
             void apply(Invocation&);
         };
+        class DConstInstruction final:public Instruction{
+            double val;
+          public:
+            DConstInstruction(double);
+            void apply(Invocation&);
+        };
         
     };
   
