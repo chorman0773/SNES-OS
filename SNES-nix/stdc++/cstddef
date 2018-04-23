@@ -1,0 +1,10 @@
+#ifndef __cstddef_h_2018_04_20_13_11
+#define __cstddef_h_2018_04_20_13_11
+
+#include <stddef.h>
+
+namespace std{
+    using ::size_t;
+};
+
+#endif

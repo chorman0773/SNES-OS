@@ -1,0 +1,7 @@
+#ifndef __version_2018_04_20_13_14
+#define __version_2018_04_20_13_14
+
+#define STDCPPVERSION __cplusplus
+
+
+#endif
