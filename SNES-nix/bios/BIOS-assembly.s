@@ -125,7 +125,7 @@ reset_exit:
 	JSR MMU_clearprocExec
 	BRA setpermissions_end
 	
-	stop: ;GCC-Attribute noret
+	stop: ;stop(void)noreturn;
 	LDA $7e:0000 ;Get Access control
 	IFNZ stop_execute
 	LDA #$0010
