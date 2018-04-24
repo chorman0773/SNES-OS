@@ -1,0 +1,165 @@
+#ifndef random_2018_04_23_19_44
+
+#include <cstdint>
+#include <cmath>
+namespace std{
+    uint64_t nextRandomSeed();
+
+    template<typename T,uint64_t a,uint64_t c,T max = 0> class linear_congruential_generator{
+    private:
+        typedef uint64_t type;
+        typedef T result_type;
+        type state;
+        static constexpr int getBits(){
+            return (int) pow(2,ceil(log(max)/log(2)));
+        };
+        static type initRandomizeSeed(type val){
+                return (val^a)&((1L<<48)-1);
+        }
+    public:
+
+        explicit template<typename Sseq> linear_congruential_generator(Sseq& seq){
+            seed(seq);
+        }
+        explicit linear_congruential_generator(type state=0){
+            seed(state);
+        }
+        
+        template<typename Sseq> void seed(Sseq& seq){
+            type state;
+            seq.generate(&state,(&state)+1);
+            seed(seed);
+        }
+        void seed(type state=0){
+            this->state = initRandomizeSeed(state==0?nextRandomSeed():state);
+        }
+        result_type operator()(){
+            state = (a*state+c)&(1L<<48);
+            return (state>>(48-getBits())%max;
+        }
+        void discard(unsigned long val){
+            for(unsigned long n = 0;n<val;n++)
+                operator();
+        }
+        
+    };
+    template<typename T,uint64_t a,uint64_t c> class linear_congruential_generator<T,a,c,0>{
+        typedef uint64_t type;
+        typedef T result_type;
+        type state;
+        static constexpr int getBits(){
+            return (int) pow(2,ceil(log(max)/log(2)));
+        };
+        static type initRandomizeSeed(type val){
+                return (val^a)&(1L<<48);
+        }
+    public:
+        explicit template<typename Sseq> linear_congruential_generator(Sseq& seq){
+            seed(seq);
+        }
+        explicit linear_congruential_generator(type state=0){
+            seed(state);
+        }
+        
+        template<typename Sseq> void seed(Sseq& seq){
+            type state;
+            seq.generate(&state,(&state)+1);
+            seed(seed);
+        }
+        void seed(type state=0){
+            this->state = initRandomizeSeed(state==0?(type)nextRandomSeed():state);
+        }
+        result_type operator()(){
+            state = (a*state+c)&(1L<<48);
+            return state>>(48-bits);
+        }
+        void discard(unsigned long val){
+            for(unsigned long n = 0;n<val;n++)
+                operator();
+        }
+    };
+
+    template<uint64_t a,uint64_t c,uint64_t max = 0> class linear_congruential_generator<uint64_t,a,c>{
+    private:
+        typedef uint64_t type;
+        typedef uint64_t result_type;
+        type state;
+        static type initRandomizeSeed(type val){
+                return (val^a)&((1L<<48)-1);
+        }
+        uint32_t next(){
+            state = (a*state+c)&((1L<<48)-1);
+            return ((state>>(16)));
+        }
+    public:
+
+        explicit template<typename Sseq> linear_congruential_generator(Sseq& seq){
+            seed(seq);
+        }
+        explicit linear_congruential_generator(type state=0){
+            seed(state);
+        }
+        
+        template<typename Sseq> void seed(Sseq& seq){
+            type state;
+            seq.generate(&state,(&state)+1);
+            seed(seed);
+        }
+        void seed(type state=0){
+            this->state = initRandomizeSeed(state==0?nextRandomSeed():state);
+        }
+        result_type operator()(){
+            return (next()<<32L|next())%max;
+        }
+        void discard(unsigned long val){
+            for(unsigned long n = 0;n<val;n++)
+                operator();
+        }
+        
+    };
+    template<uint64_t a,uint64_t c> class linear_congruential_generator<uint64_t,a,c,0>{
+        typedef uint64_t type;
+        typedef T result_type;
+        type state;
+        static constexpr int getBits(){
+            return (int) pow(2,ceil(log(max)/log(2)));
+        };
+        static type initRandomizeSeed(type val){
+                return (val^a)&(1L<<48);
+        }
+        uint32_t next(){
+            state = (a*state+c)&((1L<<48)-1);
+            return ((state>>(16)));
+        }
+    public:
+        explicit template<typename Sseq> linear_congruential_generator(Sseq& seq){
+            seed(seq);
+        }
+        explicit linear_congruential_generator(type state=0){
+            seed(state);
+        }
+        
+        template<typename Sseq> void seed(Sseq& seq){
+            type state;
+            seq.generate(&state,(&state)+1);
+            seed(seed);
+        }
+        void seed(type state=0){
+            this->state = initRandomizeSeed(state==0?(type)nextRandomSeed():state);
+        }
+        result_type operator()(){
+            return (next()<<32L|next());
+        }
+        void discard(unsigned long val){
+            for(unsigned long n = 0;n<val;n++)
+                operator();
+        }
+    };
+
+    using minstd_rand0 = linear_congruential_generator<uint32_t,16807,0,2147483647>;
+    using minstd_rand  = linear_congruential_generator<uint32_t,48271,0,2147483647>;
+    using default_random_engine = linear_congruential_generator<uint32_t,0x5DEECE66DL,0xBL,0>;
+
+
+};
+#endif

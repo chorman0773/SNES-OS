@@ -24,16 +24,16 @@ namespace java{
     
     class ReferenceType:public Type{
         string name;
+        Class* base;
     public:
-        ReferenceType(const string&);
+        ReferenceType(const string&,Class*);
         TypeCategory getCategory()const override final;
         bool isPrimitive()const override final;
         const string& getDescriptor()const override;
+        const Class* getClass();
     };
 
     class ClassType final:public ReferenceType{
-    private:
-        Class* base;
     public:
         ClassType(Class*);
         ClassType();
