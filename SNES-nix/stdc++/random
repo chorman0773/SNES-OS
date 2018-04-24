@@ -1,4 +1,5 @@
-#ifndef random_2018_04_23_19_44
+#ifndef __random_2018_04_23_19_44
+#define __random_2018_04_23_19_44
 
 #include <cstdint>
 #include <cmath>
