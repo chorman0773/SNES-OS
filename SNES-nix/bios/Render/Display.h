@@ -52,4 +52,6 @@ void rotateScreen(int);
 void moveScreen(int,int);
 void strechScreen(float,float);
 
+void nmiRoutine();
+
 #endif

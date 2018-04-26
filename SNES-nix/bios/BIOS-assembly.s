@@ -1,4 +1,11 @@
 
+.alias sr    $70:0024
+.alias push  $70:002C
+.alias pop   $70:002D
+.alias ebp $70:0018
+.alias bp  $70:001A
+.alias esp $70:001C
+.alias sp  $70:001E
 
 	;RESET
 	SEI  ;Turn off Interupts
@@ -23,67 +30,20 @@ reset_exit:
 	
 	;IRQ
 	SEI
-	LDA $7e:1000
-	LDX $7e:1002
-	LDY $7e:1004
-	JSR readSub
-	JMP (long) sp
+	JMP (long) [$7e:1000]
 	
 	
 	;BRK
 	SEI
-	PHA
-	LDA $7e:1006
-	LDX $7e:1008
-	LDY $7e:100A
-	JSR readSub
-	PLA
-	JMP (long) sp
+	JMP (long) [$7e:1004]
 	
-	
-	.alias ax 
-	.alias imm
-	;add32(u32 -> ax, u32 -> imm (special register, 32-bit immediate bus))
-	add32:
-	LDA ax
-	LDY imm
-	ADD A, Y
-	LDX 2
-	LDA ax, X
-	LDY imm, X
-	ADC A, Y
-	
-	
-	.alias eax
-	.alias eim
-	;add64(u64 -> eax, u32 -> eim (special register, 64-bit immediate bus))
-	add64:
-	LDA eax
-	LDY eim
-	ADD A, Y
-	LDX 2
-	LDA eax, X
-	LDY eim, X
-	ADC A, Y
-	LDA eax
-	LDY eim
-	ADC A, Y
-	LDX 4
-	LDA eax, X
-	LDY eim, X
-	ADC A, Y
-	LDA eax
-	LDY eim
-	ADC A, Y
-	LDX 6
-	LDA eax, X
-	LDY eim, X
-	ADC A, Y
+	;NMI
+	SEI
+	JMP (long) nmiRoutine
 	
 	
 	
-	.alias ebp
-	.alias bp
+	
 	
 	.alias PROC_Read #$0001
 	.alias PROC_Write #$0002
@@ -125,7 +85,7 @@ reset_exit:
 	JSR MMU_clearprocExec
 	BRA setpermissions_end
 	
-	stop: ;stop(void)noreturn;
+	stop: ;GCC-Attribute noret
 	LDA $7e:0000 ;Get Access control
 	IFNZ stop_execute
 	LDA #$0010
@@ -139,26 +99,13 @@ reset_exit:
 	JSR (long) sp
 	STP
 	
-	.alias cioBusTypeQuery
-	.alias cioQueryResponse
-	.alias cioBusType
-	.alias sataQuery
-	.db src \sys\boot
+	.db startupFile 5C 73 79 73 5C 62 6F 6F 66 5C 00
 	
 	
 	bios:
 	;TODO 
-	LDA #$6e
-	STA cioBusTypeQuery
-	LDA cioQueryResponse
-	IFNZ startup_disc
-	PHB
-	PEA src
-	LDA #$6e
-	STA cioBusType
-	JSR cioBusRead
-	BRA startup_finish
-	startup_disc:
+	startup:
+	
 	
 	
 	

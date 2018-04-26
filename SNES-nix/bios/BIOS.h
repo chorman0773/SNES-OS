@@ -11,7 +11,7 @@
 #endif
 #define __nativedecl __cdecl
 
-typedef void(*call_handler)(void);
+
 
 __nativedecl void setpermissions(void*,unsigned int,unsigned short);
 
@@ -22,10 +22,10 @@ __nativedecl void stop() __attribute__((noreturn));
 __nativedecl void syscall(unsigned short);
 
 
-__nativedecl void set_syscall(call_handler[]);
+__nativedecl void set_syscall(void(*)());
 
-__nativedecl void set_brkhandler(call_handler);
-__nativedecl void set_irqhandler(call_handler);
-__nativedecl void set_shutdownhandler(call_handler);
+__nativedecl void set_brkhandler(void(*)());
+__nativedecl void set_irqhandler(void(*)());
+__nativedecl void set_shutdownhandler(void(*)());
 
 #endif

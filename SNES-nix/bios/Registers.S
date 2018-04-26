@@ -41,11 +41,9 @@
 
     ;Stack Registers
 .alias ebp $70:0018
-.alias bp  $70:0018
-.alias bp2 $70:001A
+.alias bp  $70:001A
 .alias esp $70:001C
-.alias sp  $70:001C
-.alias sp2 $70:001E
+.alias sp  $70:001E
 
     
 
