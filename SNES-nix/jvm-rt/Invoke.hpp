@@ -73,7 +73,7 @@ namespace java{
         StackFrame(Invocation&,int,int);
         StackFrame(Invocation&);
         StackValue& getLocal(int);
-        StackValue& pop();
+        void pop(StackValue&);
         void pop2(StackValue&,StackValue&);
         void push(StackValue&);
         void push2(StackValue&);
@@ -124,9 +124,9 @@ namespace java{
         long popLong();
         void pushDouble(double);
         double popDouble();
-        void pushReference(shared_ptr<ReferencePtr>);
-        shared_ptr<ReferencePtr> popReference();
-        void setMonitor(shared_ptr<ReferencePtr>);
+        void pushReference(ReferencePtr);
+       	ReferencePtr popReference();
+        void setMonitor(ReferencePtr);
         void clearMonitor();
         
         void setInt(int,int32_t);
@@ -156,7 +156,7 @@ namespace java{
 		int maxStack;
 		int maxLocals;
 		int sp;
-        int pc;
+        	int pc;
 		VerificationValue vstack[256];
 	public:
 		ValidationState(MethodDescriptor&);
@@ -174,75 +174,75 @@ namespace java{
 		bool canDup();
 		bool canDupX(int);
 		bool canDup2();
-        bool canSwap();
-        bool canJsr();
-        bool canInvokeNonVirtual();
+		bool canSwap();
+		bool canJsr();
+		bool canInvokeNonVirtual();
 		uint8_t read8();
-        uint16_t read16();
-        uint32_t read32();
+		uint16_t read16();
+		uint32_t read32();
 	};
     
     namespace bytecode{
-        class Instruction{
-        public:
-            virtual void apply(Invocation&)=0;
-			virtual bool validate(ValidationState&)=0;
-        };
-        class NopInstruction final:public Instruction{
-        public:
-            void apply(Invocation&);
-			bool validate(ValidationState&);
-        };
-        class IConstInstruction final:public Instruction{
-        private:
-            int value;
-        public:
-            IConstInstruction(int);
-            void apply(Invocation&);
-			bool validate(ValidationState&);			
-        };
-        class LdcInstruction final:public Instruction{
-        public:
-            void apply(Invocation&);
-			bool validate(ValidationState&);
-        };
-        class BiPushInstruction final:public Instruction{
-        public:
-            void apply(Invocation&);
-			bool validate(ValidationState&);
-        };
-        class SiPushInstruction final:public Instruction{
-        public:
-            void apply(Invocation&);
-			bool validate(ValidationState&);
-        };
-        class FConstInstruction final:public Instruction{
-            float val;
-        public:
-            FConstInstruction(float);
-            void apply(Invocation&);
-			bool validate(ValidationState&);
-        };
-        class LConstInstruction final:public Instruction{
-            long val;
-        public:
-            LConstInstruction(long);
-            void apply(Invocation&);
-			bool validate(ValidationState&);
-        };
-        class DConstInstruction final:public Instruction{
-            double val;
-          public:
-            DConstInstruction(double);
-            void apply(Invocation&);
-			bool validate(ValidationState&);
-        };
+       	 class Instruction{
+			public:
+				virtual void apply(Invocation&)=0;
+				virtual bool validate(ValidationState&)=0;
+			};
+			class NopInstruction final:public Instruction{
+			public:
+				void apply(Invocation&);
+				bool validate(ValidationState&);
+			};
+			class IConstInstruction final:public Instruction{
+			private:
+				int value;
+			public:
+				IConstInstruction(int);
+				void apply(Invocation&);
+				bool validate(ValidationState&);			
+			};
+			class LdcInstruction final:public Instruction{
+			public:
+				void apply(Invocation&);
+				bool validate(ValidationState&);
+			};
+			class BiPushInstruction final:public Instruction{
+			public:
+				void apply(Invocation&);
+				bool validate(ValidationState&);
+			};
+			class SiPushInstruction final:public Instruction{
+			public:
+				void apply(Invocation&);
+				bool validate(ValidationState&);
+			};
+			class FConstInstruction final:public Instruction{
+				float val;
+			public:
+				FConstInstruction(float);
+				void apply(Invocation&);
+				bool validate(ValidationState&);
+			};
+			class LConstInstruction final:public Instruction{
+				long val;
+			public:
+				LConstInstruction(long);
+				void apply(Invocation&);
+				bool validate(ValidationState&);
+			};
+			class DConstInstruction final:public Instruction{
+				double val;
+			  public:
+				DConstInstruction(double);
+				void apply(Invocation&);
+				bool validate(ValidationState&);
+			};
 		class AConstNullInstruction final:public Instruction{
 		public:
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class ToSmallPrimitiveInstruction final:public Instruction{
 			const PrimitiveType& target;
 		public:
@@ -250,7 +250,7 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class WidenPrimitiveInstruction final:public Instruction{
 			StackValueType base;
 			StackValueType target;
@@ -259,7 +259,7 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class NarrowPrimitiveInstruction final:public Instruction{
 			StackValueType base;
 			StackValueType target;
@@ -268,10 +268,10 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class LoadValue final:public Instruction{
 			StackValueType target;
-        public:
+	public:
 			LoadValue(StackValueType);
 			void apply(Invocation&);
 			bool validate(ValidationState&);
@@ -291,9 +291,9 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-        class StoreValue final:public Instruction{
-			StackValueType target;
-        public:
+			class StoreValue final:public Instruction{
+				StackValueType target;
+			public:
 			StoreValue(StackValueType);
 			void apply(Invocation&);
 			bool validate(ValidationState&);
@@ -313,7 +313,7 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class SmallPrimitiveArrayLoad final:public Instruction{
 			ArrayType& type;
 		public:
@@ -328,13 +328,13 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class ANewArray final:public Instruction{
 		public:
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class ValueReturn final:public Instruction{
 			StackValueType type;
 		public:
@@ -347,31 +347,31 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class ArrayLength final:public Instruction{
 		public:
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class ThrowExcept final:public Instruction{
 		public:
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class CheckCast final:public Instruction{
 		public:
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class IsInstance final:public Instruction{
 		public:
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class UnaryOpInstruction final:public Instruction{
 			StackValueType target;
 			UnaryOp op;
@@ -380,7 +380,7 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class BinaryOpInstruction final:public Instruction{
 			StackValueType target;
 			BinaryOp op;
@@ -389,7 +389,7 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class CompareInstruction final:public Instruction{
 			StackValueType target;
 			CompareOp op;
@@ -405,13 +405,13 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class Pop final:public Instruction{
 		public:
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class GetField final:public Instruction{
 		public:
 			void apply(Invocation&);
@@ -432,83 +432,83 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-		
+
 		class Goto final:public Instruction{
 		public:
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-        
-        
-        
-        class InvokeInstruction final:public Instruction{
-            InvocationType type;
-        public:
-            InvokeInstruction(InvocationType);
-            void apply(Invocation&);
-			bool validate(ValidationState&);
-        };
-        
-        class JsrInstruction final:public Instruction{
-        public:
-            void apply(Invocation&);
-			bool validate(ValidationState&);
-        };
-        class RetInstruction final:public Instruction{
-        public:
-            void apply(Invocation&);
-			bool validate(ValidationState&);
-        };
 
-        class ImplDepInstruction final:public Instruction{
-            int key;
-        public:
-            ImplDepInstruction(int);
-            void apply(Invocation&);
+
+
+		class InvokeInstruction final:public Instruction{
+			InvocationType type;
+		public:
+			InvokeInstruction(InvocationType);
+			void apply(Invocation&);
 			bool validate(ValidationState&);
-        };
-        class BreakpointInstruction final:public Instruction{
-        public:
-            void apply(Invocation&);
+		};
+
+		class JsrInstruction final:public Instruction{
+		public:
+			void apply(Invocation&);
 			bool validate(ValidationState&);
-        };
-        
-        class SwapInstruction final:public Instruction{
-        public:
-            void apply(Invocation&);
+		};
+		class RetInstruction final:public Instruction{
+		public:
+			void apply(Invocation&);
 			bool validate(ValidationState&);
-        };
-        
-        class MonitorEnter final:public Instruction{
-        public:
-            void apply(Invocation&);
+		};
+
+		class ImplDepInstruction final:public Instruction{
+			int key;
+		public:
+			ImplDepInstruction(int);
+			void apply(Invocation&);
 			bool validate(ValidationState&);
-        };
-        class MonitorExit final:public Instruction{
-        public:
-            void apply(Invocation&);
+		};
+		class BreakpointInstruction final:public Instruction{
+		public:
+			void apply(Invocation&);
 			bool validate(ValidationState&);
-        };
-        class PopInstruction final:public Instruction{
-            int num;
-        public:
-            PopInstruction(int);
-            void apply(Invocation&);
+		};
+
+		class SwapInstruction final:public Instruction{
+		public:
+			void apply(Invocation&);
 			bool validate(ValidationState&);
-        };
-		
-        class MultiANewArray final:public Instruction{
-        public:
-            void apply(Invocation&);
+		};
+
+		class MonitorEnter final:public Instruction{
+		public:
+			void apply(Invocation&);
 			bool validate(ValidationState&);
-        };
-        
-        class NewInstruction final:public Instruction{
-        public:
-            void apply(Invocation&);
+		};
+		class MonitorExit final:public Instruction{
+		public:
+			void apply(Invocation&);
 			bool validate(ValidationState&);
-        };
-        
+		};
+		class PopInstruction final:public Instruction{
+			int num;
+		public:
+			PopInstruction(int);
+			void apply(Invocation&);
+			bool validate(ValidationState&);
+		};
+
+		class MultiANewArray final:public Instruction{
+		public:
+			void apply(Invocation&);
+			bool validate(ValidationState&);
+		};
+
+		class NewInstruction final:public Instruction{
+		public:
+			void apply(Invocation&);
+			bool validate(ValidationState&);
+		};
+
     };
   
 };
