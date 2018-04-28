@@ -140,8 +140,8 @@ namespace java{
         NameAndSignature(const string&,const SignatureDescriptor);
         const string& getName();
         const SignatureDescriptor& getSignature();
-        bool operator<(const NameAndSignature&)const;
-        bool operator>(const NameAndSignature&)const;
+        bool operator< (const NameAndSignature&)const;
+        bool operator> (const NameAndSignature&)const;
         bool operator==(const NameAndSignature&)const;
         bool operator!=(const NameAndSignature&)const;
         bool operator<=(const NameAndSignature&)const;
@@ -156,10 +156,36 @@ namespace java{
         AccessType type;
         const NameAndType& nameAndType;
     public:
-        FieldDescriptor(const NameAndType&,const ClassDescriptor&,AccessType);
+        FieldDescriptor(const NameAndType&,const ClassDescriptor&,AccessType,short);
+        AccessType getFieldAccessType()const;
+        const NameAndType& getNameAndType()const;
+        operator string()const;
+        bool operator< (const FieldDescriptor&)const;
+        bool operator> (const FieldDescriptor&)const;
+        bool operator==(const FieldDescriptor&)const;
+        bool operator!=(const FieldDescriptor&)const;
+        bool operator<=(const FieldDescriptor&)const;
+        bool operator>=(const FieldDescriptor&)const;
     };
     
-    
+    class MethodDescriptor: public AccessibleObject{
+    private:
+        const ClassDescriptor& owner;
+        InvocationType type;
+        const NameAndSignature& nameAndSignature;
+        uint64_t codePos;
+    public:
+        MethodDescriptor(const NameAndSignature&,const ClassDescriptor&,InvocationType,uint64_t,short);
+        InvocationType getInvocationType()const;
+        const NameAndSignature& getNameAndSignature()const;
+        operator string()const;
+        bool operator< (const MethodDescriptor&)const;
+        bool operator> (const MethodDescriptor&)const;
+        bool operator==(const MethodDescriptor&)const;
+        bool operator!=(const MethodDescriptor&)const;
+        bool operator<=(const MethodDescriptor&)const;
+        bool operator>=(const MethodDescriptor&)const;
+    };
     
 
 };
