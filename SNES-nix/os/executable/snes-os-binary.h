@@ -55,7 +55,8 @@ int canDynLink(header*);
 int loadBinary(header*,FILE*);
 
 void link(FILE*,FILE*,FILE*);
-  
+ 
+void* linkSymbol(header*,const char*);
     
 
 #ifdef __cplusplus
