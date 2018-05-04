@@ -1,10 +1,10 @@
 #include <stdarg.h>
 #include <stdlib.h>
+#include <os/Registers.h>
 
 
 void __va_start(va_list* list,void* last_arg,size_t size){
-	void** bp = (void**) 0x700018;
-	void** sp = (void**) 0x70001C;
+	void** bp = (void**) ebp;
 	void* frameSp = *bp;
 	void* frameBp = *((void**)*bp);
 	void* argsList = *((void**)((char*)last_arg)+size));
