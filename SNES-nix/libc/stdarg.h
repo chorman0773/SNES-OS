@@ -10,7 +10,7 @@ extern "C"{
 typedef struct{
     void* last_arg;
     void* prev_arg;
-    void* buff;
+    char* buff;
     void* bp;
 }va_list;
 
