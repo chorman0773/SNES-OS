@@ -8,5 +8,6 @@ int rand(){
 }
 
 void srand(unsigned int s){
-    seed = (s ^ 0x5DEECE66DL) & ((1L << 48) - 1);
+    seed = ((s*4280675513) ^ 0x5DEECE66DL) & ((1L << 48) - 1);
 }
+ 
