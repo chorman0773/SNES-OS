@@ -14,11 +14,11 @@ typedef struct{
     void* bp;
 }va_list;
 
-#define va_start(ap,last_arg) __va_start(&ap,(&last_arg)+1)
+#define va_start(ap,last_arg) __va_start(&ap,(&last_arg),sizeof(last_arg))
 #define va_end(ap) __va_end(&ap)
 #define va_arg(ap,type) *((type*)__va_arg(&ap));
 
-void __va_start(va_list*,void*);
+void __va_start(va_list*,void*,size_t);
 void __va_end(va_list*);
 void* __va_arg(va_list*);
 
