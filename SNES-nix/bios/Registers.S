@@ -53,9 +53,7 @@
 .alias pb  $70:0022
 
     ;Stack Push/Pop
-    ;To Push a value, write the value to sr and write the size in bytes to push (1, 2, 4, or 8)
-    ;To Pop a value, write the size in bytes to pop (1, 2, 4, or 8)
-.alias sr    $70:0024
+.alias sr    $70:0100
 .alias push  $70:002C
 .alias pop   $70:002D
 
