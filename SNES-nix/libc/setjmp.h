@@ -3,7 +3,7 @@
 
 #define setjmp(buf) _setjmp(&buf);
 typedef struct{
-  int(*returnAddress)();
+  void*  s;
   void* bp;
   void* sp;
 }jmp_buf;
