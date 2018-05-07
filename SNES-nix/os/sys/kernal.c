@@ -32,8 +32,6 @@ process fork(int uid,int gid){
     process newProc;
     int i;
     __asm__ volatile("SEI");
-    char memname[16]= "";
-    char outname[15]= "/proc/self/mem";
     newProc.pid = pid;
     newProc.uid = uid;
     newProc.gid = gid;
@@ -45,22 +43,16 @@ process fork(int uid,int gid){
         newProc.threads[i].procId = pid;
     }
     currThread->reg.eax = oldPid;
-    __asm__ volatile("cont_:\n\tPER cont_\n\tLDK pb\n\tPHK");
+    saveThread();
     newProc.threads[currThread->threadId] = *currThread;
     newProc.threads[currThread->threadId].priority = 100000;
-    __asm__ volatile("PLA");
-    __asm__ volatile("CLI");
     if(currThread->reg.eax!=currProcess->pid){
         numProcesses++;
         processes[pid] = newProc;
         return newProc;
     } else{
         oldPid = currThread->reg.eax;
-        currThread->priority = 0;
-        strcpy(memname,"\\proc\\");
-        strcat(memname,itoa(oldPid));
-        strcat(memname,"\\mem");
-        relink(memname,outname);
+        copyMemory(currProcess->pid,oldPid);
     }
 }
 
