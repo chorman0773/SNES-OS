@@ -65,17 +65,19 @@ process fork(int uid,int gid){
 }
 
 
-void irqHandler(){
+void irqHandler()__attribute__(biosHandler("IRQ")){
     currProcess->activeThreadId++;
     __asm__ volatile("CLI");
     __asm__ volatile("RTI");
 }
 
-void brkHandler(){
+void brkHandler()__attribute__(biosHandler("BRK")){
     unsigned short swi;
     __asm__ volatile("STA %0":"=r"(swi));
     switch(swi){
-        case 32:
+        case 0x40:
+            int code = ebx;
+            
         ;
     }
     
@@ -83,12 +85,14 @@ void brkHandler(){
     __asm__ volatile("RTI");
 }
 
-void syscallHandler(unsigned short syscall,...){
+void syscallHandler(unsigned short syscall,...)__attribute__(biosHandler("syscall")){
     __asm__ volatile("SEI");
     va_list args;
     va_start(args);
     switch(syscall){
-       
+        case 0:
+            const char* name = va_arg(args,const char*);
+            
     }
     va_end(args);
     __asm__ volatile("CLI");
@@ -99,7 +103,7 @@ void shutdownHandler(){
     __asm__ volatile("CLI");
 }
 
-void boot(){
+void boot()__attribute__((noreturn)){
       void(*irq)() = irqHandler;
       void(*brk)() = brkHandler;
       void(*syscall)() = syscallHandler;
