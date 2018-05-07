@@ -95,7 +95,7 @@ void shutdownHandler(){
     __asm__ volatile("CLI");
 }
 
-void boot()__attribute__((noreturn)){
+void boot(unsigned short snesBiosVersion, unsigned short mmuCoreVersion,int bootArgv,const char** bootArgc)__attribute__((noreturn)){
       void(*irq)() = irqHandler;
       void(*brk)() = brkHandler;
       void(*syscall)() = syscallHandler;
