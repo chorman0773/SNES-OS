@@ -4,6 +4,7 @@
 #include <openssl/SHA.h>
 #include <string.h>
 #include <stdlib.h>
+#include "random.h"
 
 struct urandomState{
 	unsigned char key[32];
