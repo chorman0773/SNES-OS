@@ -2,6 +2,7 @@
 #include <bios/SNESnix-Thread.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <bios/HDDAccess.h>
 
@@ -82,13 +83,14 @@ void brkHandler(){
     __asm__ volatile("RTI");
 }
 
-void syscallHandler(){
-    unsigned short syscall;
+void syscallHandler(unsigned short syscall,...){
     __asm__ volatile("SEI");
-    __asm__ volatile("STA %0":"=r"(syscall));
+    va_list args;
+    va_start(args);
     switch(syscall){
-        
+       
     }
+    va_end(args);
     __asm__ volatile("CLI");
 }
 void shutdownHandler(){
