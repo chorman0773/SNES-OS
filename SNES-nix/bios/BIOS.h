@@ -19,12 +19,12 @@ __nativedecl void setProtectionLevel(int);
 
 __nativedecl void stop() __attribute__((noreturn));
 
-__nativedecl void syscall(unsigned short);
+__nativedecl void syscall(unsigned short,...);
 
 
-__nativedecl void set_syscall(void(*)());
+__nativedecl void set_syscall(void(*)(unsigned short,...));
 
-__nativedecl void set_brkhandler(void(*)());
+__nativedecl void set_brkhandler(void(*)(unsigned short));
 __nativedecl void set_irqhandler(void(*)());
 __nativedecl void set_shutdownhandler(void(*)());
 
