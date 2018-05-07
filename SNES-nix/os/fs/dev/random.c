@@ -80,3 +80,50 @@ void seedUrandom(){
 	updateUrandom();
 	urandom(tmp,64);
 }
+
+unsigned char lastPoolHash[32];
+
+void random(unsigned char* out,int outsize){
+	unsigned char lastHash[32];
+	unsigned char cntrls[2][4];
+	unsigned char time[12];
+	unsigned char mouse[3];
+	unsigned char noise[32];
+	unsigned char tmp[64];
+	
+	int fd;
+	int tSize = outSize;
+	int blocks;
+	unsigned char* buff;
+	unsigned char* currBuff;
+	memcpy(lastPoolHash,lastHash,32);
+	while(tSize%32!=0)
+		tSize*=2;
+	blocks = tSize/32;
+	buff = malloc(tSize);
+	currBuff = buff;
+	for(int i = 0;i<blocks;i++){
+		fd = open("/dev/controllers",READ);
+		read(fd,0,cntrls,sizeof(cntrls));
+		close(fd);
+		fd = open("/dev/rtc",READ);
+		read(fd,0,time,sizeof(time));
+		close(fd);
+		fd = open("/dev/mouse",READ);
+		read(fd,0,mouse,sizeof(mouse));
+		close(fd);
+		fd = open("/dev/mmu/analog",READ);
+		read(fd,0,noise,sizeof(noise));
+		close(fd);
+		urandom(tmp,sizeof(tmp));
+		SHA256(lastHash,sizeof(lastHash)+sizeof(cntrls)+sizeof(time)+sizeof(mouse)+sizeof(noise)+sizeof(tmp),currBuff);
+		memcpy(currBuff,lastHash,32);
+		currBuff += 32;
+	}
+	while(tSize!=outSize){
+		tSize/=2;
+		reduce(buff,buff,tSize);
+	}
+	memcpy(buff,out,outSize);
+	memset(buff,0,blocks*32);
+}
