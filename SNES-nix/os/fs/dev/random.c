@@ -121,6 +121,7 @@ void random(unsigned char* out,int outsize){
 		memcpy(currBuff,lastHash,32);
 		currBuff += 32;
 	}
+	SHA256(buff,tSize,lastPoolHash);
 	while(tSize!=outSize){
 		tSize/=2;
 		reduce(buff,buff,tSize);
