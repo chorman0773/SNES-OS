@@ -15,6 +15,8 @@ void __va_start(va_list* list,void* last_arg,size_t size){
 }
 
 void __va_end(va_list* list){
+	void** bp = (void**) ebp;
+	*((void**)*bp) = list->buff;
 	list->buff = NULL;
 	list->prevArg = NULL;
 }
