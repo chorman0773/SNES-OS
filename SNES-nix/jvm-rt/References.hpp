@@ -24,6 +24,7 @@ namespace java{
         weak_ptr<Handle> ref;
         WeakReference(ReferenceType&,int);
         WeakReference();
+        SoftReference(shared_ptr<Handle>&);
         const Handle* getHandle()const;
         bool isReclaimed()const;
     };
