@@ -29,14 +29,23 @@ path* createFile(path*,const char*);
 void rm(path*);
 void link(path*,path*);
 
+bool exists(path*);
+bool isDir(path*);
+bool isFile(path*);
+
 path* getAbsolutePath(const char*);
-path* getRelativePath(path*,const char*);
+path* getChildPath(path*,const char*);
 const char* getPathname(path*);
+path* getWorkingDirectory();
+path* getProgramDirectory();
+path* getRelativePath(const char*);
 
 path* getFsRoot();
 
 int listPaths(path*,path**);
 
 pathinfo* getPathInfo(path*);
+
+int openFD(path*,int);
 
 #endif
