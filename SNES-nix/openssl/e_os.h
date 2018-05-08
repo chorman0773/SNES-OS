@@ -34,7 +34,7 @@ extern "C" {
 #  if defined(__s390__)
 #   define DEVRANDOM "/dev/prandom","/dev/urandom","/dev/hwrng","/dev/random"
 #  else
-#   define DEVRANDOM "/dev/urandom","/dev/random","/dev/srandom"
+#   define DEVRANDOM "/dev/urandom","/dev/random"
 #  endif
 # endif
 # if !defined(OPENSSL_NO_EGD) && !defined(DEVRANDOM_EGD)
