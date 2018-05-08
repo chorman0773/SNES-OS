@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <bios/HDDAccess.h>
 #include <os/fs/path.h>
-#include <os/fs/dev/devfs.h>
+#include <os/fs/dev/setup-devfs.h>
 
 
 typedef struct{
@@ -114,7 +114,7 @@ void boot(unsigned short snesBiosVersion, unsigned short mmuCoreVersion,int boot
       os.pid = 0;
       os.threads = calloc(sizeof(struct _thread),2);
       processes[0] = os;
-      setupDevfs(devs,devSources,devSinks);
+      initDevfs(devs,devSources,devSinks);
       stop();
 }
 
