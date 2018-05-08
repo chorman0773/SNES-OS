@@ -5,6 +5,8 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <bios/HDDAccess.h>
+#include <os/fs/path.h>
+#include <os/fs/dev/devfs.h>
 
 
 typedef struct{
@@ -95,11 +97,14 @@ void shutdownHandler(){
     __asm__ volatile("CLI");
 }
 
-void boot(unsigned short snesBiosVersion, unsigned short mmuCoreVersion,int bootArgv,const char** bootArgc)__attribute__((noreturn)){
+void boot(unsigned short snesBiosVersion, unsigned short mmuCoreVersion,int bootArgc,const char** bootArgv)__attribute__((noreturn)){
       void(*irq)() = irqHandler;
-      void(*brk)() = brkHandler;
-      void(*syscall)() = syscallHandler;
+      void(*brk)(unsigned short) = brkHandler;
+      void(*syscall)(unsigned short,...) = syscallHandler;
       void(*shutdown)() = shutdownHandler;
+      path* devs[4];
+      unsigned int(*devSources[4])(unsigned long long,unsigned char*,unsigned int);
+      void (*devSinks[4])(unsigned long long,unsigned const char*,unsigned int);
       set_syscall(syscall);
       set_brkhandler(brk);
       set_irqhandler(irq);
@@ -109,6 +114,7 @@ void boot(unsigned short snesBiosVersion, unsigned short mmuCoreVersion,int boot
       os.pid = 0;
       os.threads = calloc(sizeof(struct _thread),2);
       processes[0] = os;
+      setupDevfs(devs,devSources,devSinks);
       stop();
 }
 
