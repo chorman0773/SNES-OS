@@ -128,4 +128,5 @@ void random(unsigned char* out,int outsize){
 	}
 	memcpy(buff,out,outSize);
 	memset(buff,0,blocks*32);
+	free(buff);
 }
