@@ -1,0 +1,20 @@
+#ifndef __complex_2018_05_08_13_01
+#define __complex_2018_05_08_13_01
+
+template<typename T> class complex{};
+
+template<> class complex<float>{
+float real;
+float imm;
+public:
+  typedef float type;
+  constexpr complex();
+  constexpr complex(float);
+  constexpr complex(float,float);
+  constexpr complex(const complex<double>&);
+  constexpr complex(const complex<long double>&);
+  constexpr complex(const complex<float>&);
+  constexpr complex(complex<float>&&);
+};
+
+#endif
