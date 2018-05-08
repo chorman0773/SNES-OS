@@ -55,7 +55,7 @@ void urandom(unsigned char* out,unsigned int outSize){
 void seedUrandom(){
 	unsigned char cntrls[2][4];
 	unsigned char time[12];
-	unsigned char mouse[3];
+	unsigned char mouse[4];
 	unsigned char noise[32];
 	unsigned char tmp[64];
 	int fd = open("/dev/controllers",READ);
@@ -88,7 +88,7 @@ void random(unsigned char* out,int outsize){
 	unsigned char lastHash[32];
 	unsigned char cntrls[2][4];
 	unsigned char time[12];
-	unsigned char mouse[3];
+	unsigned char mouse[4];
 	unsigned char noise[32];
 	unsigned char tmp[64];
 	
