@@ -1,0 +1,128 @@
+#ifndef __ext4_c_2018_05_09_15_52
+#define __ext4_c_2018_05_09_15_52
+#include <os/fs/path.h>
+#include <stdint.h>
+
+typedef struct{
+  uint32_t inodeCount;
+  uint32_t blockCount;
+  uint32_t rootBlockCount;
+  uint32_t freeInodes;
+  uint32_t freeBlocks;
+  uint32_t firstBlock;
+  uint32_t logBlockSize;
+  uint32_t logClusterSize;
+  uint32_t blocksPerGroup;
+  uint32_t clustersPerGroup;
+  uint32_t inodesPerGroup;
+  uint32_t mountTime;
+  uint32_t writeTime;
+  uint16_t mountCount;
+  uint16_t maxMountCount;
+  uint16_t magic;
+  uint16_t state;
+  uint16_t errors;
+  uint16_t minorRev;
+  uint32_t lastCheck;
+  uint32_t checkMaxTime;
+  uint32_t creatorOs;
+  uint32_t revLevel;
+  uint16_t resUid;
+  uint16_t resGid;
+  uint32_t firstInode;
+  uint16_t inodeSize;
+  uint32_t featureCompat;
+  uint32_t featureIncompat;
+  uint32_t roCompat;
+  uint8_t uuid[16];
+  char volumeName[16];
+  char lastMountLocation[64];
+  uint32_t algorithmUsageBitmap;
+  uint8_t preallocBlocks;
+  uint8_t preallocDirBlocks;
+  uint16_t reservedGdtBlocks;
+  uint8_t journalUuid[16];
+  uint32_t journalInode;
+  uint32_t journalDev;
+  uint32_t lastOrphan;
+  uint32_t hashSeed[4];
+  uint8_t hashVersion;
+  uint8_t jnlBackupType;
+  uint16_t descSize
+  uint32_t defaultMountOpts;
+  uint32_t firstMetaBg;
+  uint32_t mkfsTime;
+  uint32_t journalBlocks[17];
+  uint32_t blockCountHigh;
+  uint32_t reservedBlockCountHigh;
+  uint32_t freeBlockCountHigh;
+  uint16_t inodeMinExtraSize;
+  uint16_t inodeWantSize;
+  uint32_t flags;
+  uint16_t raidStride;
+  uint16_t mmpInterval;
+  uint16_t mmpBlock;
+  uint32_t raidStrideWidth;
+  uint8_t logGroupsPerFlex;
+  uint8_t checksumType;
+  uint16_t reservedPad;
+  uint64_t kibWritten;
+  uint32_t snapshotInode;
+  uint32_t snapshotId;
+  uint64_t snapshotReservedBlockCount;
+  uint32_t snapshotList;
+  uint32_t errorCount;
+  uint32_t firstErrorTime;
+  uint32_t firstErrorId;
+  uint64_t firstErrorBlock;
+  uint8_t firstErrorFunction[32];
+  uint32_t firstErrorLine;
+  uint32_t lastErrorTime;
+  uint32_t lastErrorInode;
+  uint32_t lastErrorLine;
+  uint64_t lastErrorBlock;
+  uint8_t lastErrorFunction[32];
+  uint8_t mountOpts[64];
+  uint32_t userQuotaInode;
+  uint32_t groupQuotaInode;
+  uint32_t overheadBlocks;
+  uint32_t backupBgs[2];
+  uint8_t encryptAlgorithms[4];
+  uint8_t encryptPwdSalt[16];
+  uint32_t lnfInode;
+  uint32_t prjInode;
+  uint32_t checksumSeed;
+  uint32_t padding[98];
+  uint32_t checksum;
+}ext4_superblock;
+
+typedef struct{
+  uint32_t blockBitmapLo;
+  uint32_t inodeBitmapLo;
+  uint32_t inodeTableLo;
+  uint16_t freeBlockCount;
+  uint16_t freeInodeCount;
+  uint16_t usedBlockCount;
+  uint16_t bgFlags;
+  uint32_t excludeBitmapLo;
+  uint16_t blockBitmapCsumLo;
+  uint16_t inodeBitmapCsumLo;
+  uint16_t itableUnusedLo;
+  uint16_t checksum;
+  uint32_t blockBitmapHi;
+  uint32_t inodeBitmapHi;
+  uint16_t freeBlockCountHi;
+  uint16_t freeInodeCountHi;
+  uint16_t usedDirsCountHi;
+  uint32_t excludeBitmapHi;
+  uint16_t blockBitmapCsumHi;
+  uint16_t inodeBitmapCsumHi;
+  uint32_t padding;
+}ext4_group_desc;
+
+typedef struct{
+
+
+}ext4_inode;
+
+#endif
