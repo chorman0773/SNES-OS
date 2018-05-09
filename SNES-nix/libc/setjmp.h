@@ -6,7 +6,6 @@ typedef struct{
   short  s;
   void* bp;
   void* sp;
-  void* ip;
 }jmp_buf;
 
 int _setjmp(jmp_buf*);
