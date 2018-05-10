@@ -46,7 +46,7 @@ namespace java{
             int   iVal;
             float fVal;
             int   bytes;
-            shared_ptr<ReferencePtr> ref;
+            ReferencePtr ref;
 			int retPc;
         }value;
         StackValue* boundTo;
