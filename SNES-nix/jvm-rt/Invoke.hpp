@@ -137,7 +137,8 @@ namespace java{
         double getDouble(int);
         void setLong(int,long);
         long getLong(int);
-        
+        uint32_t getReturnAddress(int);
+		void setReturnAddress(uint32_t,int);
         
     };
 	
@@ -291,7 +292,7 @@ namespace java{
 			void apply(Invocation&);
 			bool validate(ValidationState&);
 		};
-			class StoreValue final:public Instruction{
+		class StoreValue final:public Instruction{
 				StackValueType target;
 			public:
 			StoreValue(StackValueType);
