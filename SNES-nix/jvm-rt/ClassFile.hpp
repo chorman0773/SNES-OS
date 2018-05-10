@@ -13,6 +13,7 @@ using std::initializer_list;
 namespace java{
     class ClassFile;
     
+    
     class FileReader{
         uint8_t* data;
         int loc;
@@ -26,11 +27,11 @@ namespace java{
         uint64_t read64();
         float readFloat();
         double readDouble();
-        template<typename E> std::enable_if<std::is_enum_v<E>,E> readEnum(){
+        template<typename E> typename std::enable_if<std::is_enum<E>::value,E>::type readEnum(){
             E val;
             int prev = loc;
             loc+=sizeof(E);
-            memcopy(&val,data+prev,sizeof(E));
+            memcpy(&val,data+prev,sizeof(E));
             return val;
         }
     };
@@ -65,7 +66,6 @@ namespace java{
     
     union ConstantPayload{
             struct{
-                uint16_t length;
                 string value;
             }const_utf8;
             struct{
@@ -185,6 +185,13 @@ namespace java{
         bool operator!=(const MethodDescriptor&)const;
         bool operator<=(const MethodDescriptor&)const;
         bool operator>=(const MethodDescriptor&)const;
+    };
+    
+    class InnerClassDescriptor: public AccessibleObject{
+    private:
+        const ClassDescriptor& owner;
+        const ClassDescriptor& target;
+        
     };
     
 
