@@ -5,6 +5,7 @@ typedef unsigned long size_t;
 #ifdef __cplusplus
 extern "C"{
 #endif
+#define RAND_MAX 2147483647
 	typedef struct{
 		int quotient;
 		int rem;
