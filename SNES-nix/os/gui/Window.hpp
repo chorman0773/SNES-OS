@@ -25,6 +25,8 @@ public:
 	WindowHandle(int,int,int,int,Display*);
 	WindowHandle(const WindowHandle&);
 	WindowHandle(WindowHandle&&);
+	WindowHandle& operator=(const WindowHandle&);
+	WindowHandle& operator=(WindowHandle&&);
 	~WindowHandle();
 	void createContext();
 	void setVisible(bool);
@@ -57,6 +59,7 @@ public:
 	void setTitle(string);
 	const string& getTitle()const;
 	GLXContext getGLXCtx();
+	Graphics& getGraphics();
 };
 
 Window openWindow();
