@@ -121,8 +121,145 @@ typedef struct{
 }ext4_group_desc;
 
 typedef struct{
-
-
+  uint32_t mode;
+  uint16_t uid;
+  uint32_t accessTime;
+  uint32_t changeTime;
+  uint32_t modifyTime;
+  uint32_t deletionTime;
+  uint16_t gid;
+  uint16_t numLinks;
+  uint32_t blockCount;
+  uint32_t flags;
+  union{
+    uint32_t linux_Version;
+    uint32_t hurd_Translator;
+    uint32_t masix_Reserved;
+  }osd1;
+  uint32_t blocks[15];
+  uint32_t generation;
+  uint32_t eaBlockLo;
+  uint32_t sizeHi;
+  uint32_t fragAddr;
+  union{
+    struct{
+      uint16_t blockSizeHi;
+      uint16_t eaBlockHi;
+      uint16_t uidHi;
+      uint16_t gidHi;
+      uint16_t csumLo;
+      uint16_t res;
+    }linux;
+    struct{
+      uint16_t res;
+      uint16_t modeHi;
+      uint16_t uidHi;
+      uint16_t gidHi;
+      uint32_t author;
+    }hurd;
+    struct{
+      uint16_t res1;
+      uint16_t easBlockHi;
+      uint32_t res2[2];
+    }masix;
+  }osd2;
+  uint16_t inodeSize;
+  uint16_t csumHi;
+  uint32_t ctimeExtra;
+  uint32_t mtimeExtra;
+  uint32_t atimeExtra;
+  uint32_t creationTime;
+  uint32_t creationTimeExtra;
+  uint32_t versionHi;
+  uint32_t projId;
 }ext4_inode;
 
+typedef struct{
+  uint16_t magic;
+  uint16_t entries;
+  uint16_t maxEntries;
+  uint16_t depth;
+  uint32_t generation;
+}ext4_extent_head;
+
+typedef struct{
+  uint32_t block;
+  uint32_t leafLo;
+  uint16_t leafHi;
+  uint16_t padding;
+}ext4_extent_intern;
+
+typedef struct{
+  uint16_t firstBlock;
+  uint16_t length;
+  uint16_t pointedBlockHi;
+  uint32_t pointedBlockLo;
+}ext4_extent;
+
+typedef struct{
+  ext4_extent_head header;
+  union{
+    ext4_extent_intern treeNode;
+    ext4_extent leaf;
+  }ext4_extent_entries[];
+}ext4_extent_node_nocsum;
+
+struct{
+  uint32_t inode;
+  uint16_t recLen;
+  uint8_t nameLen;
+  uint8_t fileType;
+  char name[];
+}ext4_dir_entry2;
+
+struct{
+  uint32_t hash;
+  uint32_t block;
+}ext4_htree_entry;
+
+struct{
+  struct{
+    uint32_t inode;
+    uint16_t recLen;
+    uint8_t nameLen;
+    uint8_t fileType;
+    char name[4];
+  }dot;
+  struct{
+    uint32_t inode;
+    uint16_t recLen;
+    uint8_t nameLen;
+    uint8_t fileType;
+    char name[4];
+  }dotdot;
+  struct{
+    uint32_t resZero;
+    uint8_t hashType;
+    uint8_t infoLength;
+    uint8_t depth;
+    uint8_t unused;
+  }rootinfo;
+  uint16_t limit;
+  uint16_t count;
+  uint32_t block;
+  ext4_htree_entry entries[];
+}ext4_htree_root;
+
+struct{
+  struct{
+    uint32_t inode;
+    uint16_t recLen;
+    uint8_t nameLen;
+    uint8_t fileType;
+  }fake;
+  uint16_t limit;
+  uint16_t count;
+  uint32_t block;
+  ext4_htree_entry entries[];
+}ext4_htree_node;
+
+struct{
+  uint32_t res;
+  uint32_t csum;
+}ext4_htree_tail;
 #endif
