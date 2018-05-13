@@ -7,6 +7,8 @@
 #define TYPE_Memory 0
 #define TYPE_SRAM 1
 #define TYPE_BIOS 2
+#define TYPE_Device 3
+#define TYPE_Register 4
 
 #define DEV_Null 16
 #define DEV_Zeros 17
@@ -39,6 +41,23 @@ typedef struct{
   void* mmtPtr;
 }mmt; 
 
+unsigned char stackBuffer[256];
+
+regions registers[] ={
+  {1,0x700000,4  ,PROC_Read|PROC_Write,TYPE_Register,0,0}, //eax
+  {1,0x700004,4  ,PROC_Read|PROC_Write,TYPE_Register,1,0}, //ebx
+  {1,0x700008,4  ,PROC_Read|PROC_Write,TYPE_Register,2,0}, //ecx
+  {1,0x70000C,4  ,PROC_Read|PROC_Write,TYPE_Register,3,0}, //edx
+  {1,0x700010,4  ,PROC_Read|PROC_Write,TYPE_Register,4,0}, //esi
+  {1,0x700014,4  ,PROC_Read|PROC_Write,TYPE_Register,5,0}, //edi
+  {1,0x700018,4  ,PROC_Read|PROC_Write,TYPE_Register,6,0}, //ebp
+  {1,0x70001C,4  ,PROC_Read|PROC_Write,TYPE_Register,7,0}, //esp
+  {1,0x700020,4  ,PROC_READ           ,TYPE_Register,8,0}, //eip
+  {1,0x700100,256,PROC_READ|PROC_Write,TYPE_Memory  ,0,(unsigned long long)&stackBuffer[0]} //sb
+};
+  
+
+
 extern mmt biosMMT;
 
 extern mmt processTables[65536];
@@ -47,12 +66,16 @@ extern unsigned short* const procId;
 extern bool hasLeftBios;
 region* checkAccess(unsigned int address){
   mmt* target;
+  region* currRegion;
   if(!hasLeftBios)
     target = &biosMMT;
   else{
     target = &processTable[*procId];
     if(!target->enabled||(target->flags&FLAG_UseBIOSMap)!=0)
        target = &biosMMT;
+   }
+   for(int i = 0;i<sizeof(target->regions);i++){
+     currRegion = &(target->regions[i]);
    }
 }
  
