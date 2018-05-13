@@ -56,7 +56,9 @@ regions registers[] ={
   {1,0x700100,256,PROC_READ|PROC_Write,TYPE_Memory  ,0,(unsigned long long)&stackBuffer[0]} //sb
 };
   
-
+int isWithin(unsigned int addr,region* r){
+ return addr>r->vAddress&&addr<(r->vAddress+r->size); 
+}
 
 extern mmt biosMMT;
 
@@ -64,7 +66,7 @@ extern mmt processTables[65536];
 
 extern unsigned short* const procId;
 extern bool hasLeftBios;
-region* checkAccess(unsigned int address){
+region* getRegion(unsigned int address){
   mmt* target;
   region* currRegion;
   if(!hasLeftBios)
@@ -74,9 +76,17 @@ region* checkAccess(unsigned int address){
     if(!target->enabled||(target->flags&FLAG_UseBIOSMap)!=0)
        target = &biosMMT;
    }
-   for(int i = 0;i<sizeof(target->regions);i++){
-     currRegion = &(target->regions[i]);
+   for(int i = 0;i<sizeof(registers);i++){
+     currRegion = &registers[i];
+     if(isWithin(address,currRegion))
+       return currRegion;
    }
+  for(int i = 0;i<sizeof(target->regions);i++){
+     currRegion = &(target->regions)[i];
+     if(isWithin(address,currRegion))
+       return currRegion;
+   }
+  return NULL;
 }
  
 
