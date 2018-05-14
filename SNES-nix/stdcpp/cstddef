@@ -1,10 +1,61 @@
 #ifndef __cstddef_h_2018_04_20_13_11
 #define __cstddef_h_2018_04_20_13_11
 
-#include <stddef.h>
+#pramga macros import("offsetof") define("offsetof",type,member)
 
+
+
+#define NULL nullptr
 namespace std{
-    using ::size_t;
+    typedef decltype(nullptr) nullptr_t;
+    typedef unsigned int size_t;
+    typedef long long max_align_t;
+    typedef signed int ptrdiff_t;
+    
+    enum class byte:unsigned char{};
+    
+    constexpr byte operator&  (byte l,byte r){
+        return static_cast<byte>(static_cast<unsigned char>(l)&static_cast<unsigned char>(r));
+    }
+    constexpr byte operator|  (byte l,byte r){
+        return static_cast<byte>(static_cast<unsigned char>(l)|static_cast<unsigned char>(r));
+    }
+    constexpr byte operator^  (byte l,byte r){
+        return static_cast<byte>(static_cast<unsigned char>(l)^static_cast<unsigned char>(r));
+    }
+    
+    constexpr byte operator~(byte l){
+        return static_cast<byte>(~static_cast<unsigned char>(l));
+    }
+    
+    constexpr byte& operator&= (byte& l,byte r){
+        return l = static_cast<byte>(static_cast<unsigned char>(l)&static_cast<unsigned char>(r));
+    }
+    constexpr byte operator|= (byte& l,byte r){
+        return l = static_cast<byte>(static_cast<unsigned char>(l)|static_cast<unsigned char>(r));
+    }
+    constexpr byte operator^= (byte& l,byte r){
+        return l = static_cast<byte>(static_cast<unsigned char>(l)^static_cast<unsigned char>(r));
+    }
+    
+    template<typename IntegralType> constexpr byte operator<<(byte l,IntegralType r){
+        return static_cast<byte>(unsigned char(static_cast<unsigned char>(l)<<r));
+    }
+    
+    template<typename IntegralType> constexpr byte operator>>(byte l,IntegralType r){
+        return static_cast<byte>(unsigned char(static_cast<unsigned char>(l)>>r));
+    }
+    
+    template<typename IntegralType> constexpr byte& operator<<=(byte& l,IntegralType r){
+        return l = static_cast<byte>(unsigned char(static_cast<unsigned char>(l)<<r));
+    }
+    
+    template<typename IntegralType> constexpr byte& operator>>=(byte& l,IntegralType r){
+        return l = static_cast<byte>(unsigned char(static_cast<unsigned char>(l)>>r));
+    }
+    
+    
+    
 };
 
 #endif
