@@ -491,8 +491,10 @@ namespace std{
   };
   
   template<class Base,class Derived> struct is_base_of<typename enable_if<_hidden::is_base_of_target<Base,Derived>::value,Base>::type,Derived>:true_type{};
-  
-  };
+ 
+ template<typename T> struct allignment_of:integral_constant<size_t,alignof(T)>{};
+ 
+ template<typename T,size_t size> struct allignment_of<T[size]>:integral_constant<size_t,alignof(T)>{};
  };
  
  using namespace misc;
@@ -583,6 +585,14 @@ namespace std{
   template<class T,class U> struct is_noexcept_swappable_with<typename enable_if<noexcept(swap(declval<T>(),declval<U>())),T>::type,U>:true{};
   
   template<class T> struct is_noexcept_swappable:is_noexcept_swappable_with<T,T>{};
+  
+  template<class From,class To> struct is_convertible:false_type{};
+  
+  template<class T> struct is_convertible<T,T>:true_type{};
+  
+  template<class From,class To> struct is_convertible<typename enable_if<is_constructible<To,From>::value,T>::type,U>:true_type{};
+  
+  template<class From,class To> struct is_convertible<typename conditional<false,decltype(declval<From>().operator To()),From>::type,To>:true_type{};
   
  };
  using namespace operators;
