@@ -1,0 +1,24 @@
+#ifndef __typeindex_2018_05_14_16_08
+#define __typeindex_2018_05_14_16_08
+#include <typeinfo>
+namespace std{
+  class type_index{
+    const type_info* inf;
+    public:
+      type_index(const type_info&);
+      bool operator==(const type_index&)const;
+      bool operator!=(const type_index&)const;
+      bool operator<=(const type_index&)const;
+      bool operator>=(const type_index&)const;
+      bool operator< (const type_index&)const;
+      bool operator> (const type_index&)const;
+      const char* name()const;
+      int hash_code()const;
+  };
+  template<> struct hash<type_index>{
+    typedef size_t result_type;
+    typedef type_index input_type;
+    result_type operator()(const input_type&)const;
+  };
+};
+#endif
