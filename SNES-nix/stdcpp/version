@@ -1,7 +1,30 @@
 #ifndef __version_2018_04_20_13_14
 #define __version_2018_04_20_13_14
 
+#include <string>
+
 #define STDCPPVERSION __cplusplus
 
+
+class Version{
+private:
+  unsigned int major;
+  unsigned int minor;
+public:
+  Version(unsinged int,unsigned int);
+  Version(const string&);
+  Version(unsigned short);
+  unsigned short encode()const;
+  unsigned int getMajor()const;
+  unsigned int getMinor()const;
+  operator string()const;
+  Version getOrigin()const;
+  bool operator==(const Version&)const;
+  bool operator!=(const Version&)const;
+  bool operator<=(const Version&)const;
+  bool operator>=(const Version&)const;
+  bool operator< (const Version&)const;
+  bool operator> (const Version&)const;
+};
 
 #endif
