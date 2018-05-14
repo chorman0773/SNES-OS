@@ -462,6 +462,51 @@ namespace std{
   template<typename Ret,typename... Args> struct decay<Ret(&)(Args...)>:echo_type<Ret(*)(args...)>{};
   
   template<typename T> struct remove_cvref:remove_cv<typename remove_reference<T>::type>{};
+  
+  template<class T,class... Args> struct is_invocable:false_type{};
+  
+  template<class Ret,class... Args> struct is_invocable<Ret(Args...),Args>:true_type{};
+  
+  template<class Ret,class... Args> struct is_invocable<Ret(&)(Args...),Args>:true_type{};
+  template<class Ret,class... Args> struct is_invocable<Ret(*)(Args...),Args>:true_type{};
+  
+  template<class T,class... Args> struct is_invocable<typename conditional<false,decltype(declval<T>()(declval<Args>()...)),T>::type,Args>:true_type{};
+  
+  template<class Ret,class T,class... Args> struct is_invocable_r:false_type{};
+  
+  template<class Ret,class... Args> struct is_invocable_r<Ret,Ret(Args...),Args>:true_type{};
+  
+  template<class Ret,class T,class... Args> struct is_invocable_r<typename enable_if<is_same<decltype((declval<T>()(declval<Args>()...))),Ret>::value,Ret>::type,T,Args>:true_type{};
+  
+  template<class T,class... Args> struct is_nothrow_invocable:false_type{};
+  
+  template<class Ret,class... Args> struct is_nothrow_invocable<Ret(Args...)noexcept>:true_type{};
+  
+  template<class T,class... Args> struct is_nothrow_invocable<typename enable_if<nothrow(declval<T>()(declval<Args>()...)),T>::type,Args>:true_type{};
+  
+  template<class Ret,class T,class... Args> struct is_nothrow_invocable_r:false_type{};
+  
+  template<class Ret,class... Args> struct is_nothrow_invocable_r<Ret,Ret(Args...)noexcept,Args>:true_type{};
+  
+  template<class Ret,class T,class... Args> struct is_nothrow_invocable_r<typename enable_if<nothrow(declval<T>()(declval<Args>()...)),Ret>::type,
+      typename enable_if<is_same<decltype((declval<T>()(declval<Args>()...)::value,T>::type,Args>:true_type{};
+  
+   
+  template<size_t Len,class First,class... Remaining> struct alligned_union{
+    typedef First current_level_type;
+    static constexpr std::size_t alignment_value = std::max({alignof(Types)...});
+    struct type
+    {
+      alignas(alignment_value) char _s[std::max({Len, sizeof(Types)...})];
+    };
+  };
+  
+  template<std::size_t Len, std::size_t Align /* default alignment not implemented */>
+    struct aligned_storage {
+      struct type {
+          alignas(Align) unsigned char data[Len];
+      };
+    };
  };
  using namespace type_modification;
   
@@ -596,6 +641,26 @@ namespace std{
   
  };
  using namespace operators;
+ 
+ namespace booloperators{
+  template<class... Traits> struct conjunction{};
+  template<> struct conjunction<>:true_type{};
+  template<class First,class... Rest> struct conjunction<typename enable_if<!bool(First::value),First>::type,Rest>:false_type{};
+  tempalte<class First,class... Rest> struct conjunction<typename enable_if<bool(First::value),First>::type,Rest>:conjunction<Rest>{};
   
+  template<class... Traits> struct disjunction{};
+  template<> struct disjunction<>:false_type{};
+  template<class First,class... Rest> struct disjunction<typename enable_if<bool(First::value),First>::type,Rest>:true_type{};
+  template<class First,class... Rest> struct disjunction<bool(First::value),First>::type,Rest>:disjunction<Rest>{};
+  
+  template<class Input> struct negation:conditional<bool(Input::value),true_type,false_type>::type{};
+ };
+ using namespace booloperators;
+ 
+ enum class endian{
+  little,
+  big,
+  native = little
+ };
 };
 #endif
