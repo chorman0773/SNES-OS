@@ -1,0 +1,33 @@
+#ifndef __typeinfo_2018_05_14_16_00
+#define __typeinfo_2018_05_14_16_00
+#include <stdexcept>
+
+namespace std{
+
+  class type_info{
+  private:
+    const char* name;
+    type_info()=delete;
+    type_info(const type_info&)=delete;
+    type_info& operator=(const type_info&)=delete;
+  public:
+    virtual ~type_info();
+    bool operator==(const type_info&)const;
+    bool operator!=(const type_info&)const;
+    bool before(const type_info&)const;
+    int hash_code()const;
+    const char* name()const;
+  };
+  
+  class bad_typeid:public exception{
+  public:
+    bad_typeid()noexcept;
+  };
+  
+  class bad_cast:public exception{
+  public:
+    bad_cast()noexcept;
+  };
+
+};
+#endif
