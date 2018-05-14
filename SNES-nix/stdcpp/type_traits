@@ -1,6 +1,7 @@
 #ifndef __type_traits_2018_05_14_10_27
 #define __type_traits_2018_05_14_10_27
 #include <cstdlib>
+#include <utility>
 namespace std{
 
   [[stdcpp::optimization_candidate,no_odr_use]] template<typename T> T&& declval();
@@ -14,10 +15,12 @@ namespace std{
         return value;
       }
     };
+    
+    template<bool b> struct boolean_constant:integral_constant<bool,b>{};
 
-    struct true_type :integral_constant<bool,true>{};
+    struct true_type :boolean_constant<true>{};
 
-    struct false_type: integral_constant<bool,false>{};
+    struct false_type: boolean_constant<false>{};
 
     template<typename T> struct is_void:public false_type{};
 
@@ -30,6 +33,8 @@ namespace std{
     template<> struct is_void<const volatile void>:public true_type{};
 
     template<typename... Args> using void_t = void;
+    
+    tempalte<typename... Args> struct is_void<void_t<Args>>:true_type{}
     
     template<bool val,typename T=void> struct enable_if{};
   
@@ -44,6 +49,17 @@ namespace std{
     template<typename T,typename U> struct conditional<true,T,U>{
       typedef T type;
     };
+    
+    template<typename T,typename U> struct is_same:false_type{};
+    
+    //If the Arguments are exactly the same type then they are the same
+    template<typename T> struct is_same<T,T>:true_type{};
+    
+    //Otherwise, if the 2 types are potentially cv-qualified void, then they are the same.
+    template<typename T,typename U> struct is_same<typename enable_if<is_void<T>::value,T>::type,typename enable_if<is_void<U>::value,U>::type>:true_type{};
+    
+    //Otherwise leave it up to the template type origin locator
+    //This includes the fact that signed <integral-type> is the same as <integral-type>
   };
   using namespace helper_types;
   namespace primary_type_categories{
@@ -427,6 +443,12 @@ namespace std{
   
   template<typename T> struct decay:echo_type<typename remove_cv<typename remove_reference<T>::type>::type>{};
   
+  template<typename T> struct rank:integral_constant<unsigned,0>{};
+  
+  template<typename T> struct rank<T[]>:integral_constant<unsigned,rank<T>::value+1>{};
+  
+  template<typename T,size_t size> struct rank<T[size]>:integral_constant<unsigned,rank<T>::value+1>{};
+  
   template<typename T> struct decay<T[]>:echo_type<T*>{};
   
   template<typename T> struct decay<T(&)[]>:echo_type<T*>{};
@@ -450,10 +472,27 @@ namespace std{
   
   template<typename T> struct common_type<T>:echo_type<T>{};
   
-  template<typename T,typename U> struct common_type<T,U>:echo_type<typename decay<decltype(false?declval<T>():declval<U>())>::type>{};
-  
   template<typename T,typename U,typename... Rest> struct common_type<T,U,Rest>:common_type<common_type<T,U>,Rest>{};
-   
+  
+  template<class Base,class Derived> struct is_base_of:false_type{};
+  
+  template<class A,class B> struct is_base_of<typename enable_if<is_const<A>::value||is_volatile<A>::value||is_const<B>::value||is_volatile<B>::value,A>::type,B>
+  `:is_base_of<typename remove_cv<A>::type,typename remove_cv<B>::type>{};
+  template<class T> struct is_base_of<typename enable_if<std::is_class<T>::value,T>::type,T>:true_type{};
+  
+  namespace _hidden{
+  
+    [[stdcpp::optimization_candidate,no_odr]] template<typename Base> true_type test_is_base_of(const Base*);
+    [[stdcpp::optimizaiton_candidate,no_odr]] template<typename Base> false_type test_is_base_of(const void*);
+
+    template<typename Base,typename Derived> using is_base_of_target = 
+      decltype(test_is_base_of<Base>(declval<typename add_pointer<typename remove_cvref<Derived>::type>::type>());
+  
+  };
+  
+  template<class Base,class Derived> struct is_base_of<typename enable_if<_hidden::is_base_of_target<Base,Derived>::value,Base>::type,Derived>:true_type{};
+  
+  };
  };
  
  using namespace misc;
@@ -466,7 +505,85 @@ namespace std{
   template<class T,class... Args> struct is_noexcept_constructible:false_type{};
   
   template<class T,class... Args> struct is_noexcept_constructible<typename enable_if<!is_constructible<T,Args>::value,T>::type,T>::type,Args>:false_type{};
-    
+  
+  template<class T,class... Args> struct is_noexcept_constructible<typename enable_if<noexcept(T(Args...)),T>::type>:true_type{};
+  
+  template<class T,class... Args> struct is_trivially_constructible:false_type{};
+  //Overloads are compiler assisted
+  
+  template<class T> struct is_default_constructible:is_constructible<T>{};
+  
+  template<class T> struct is_noexcept_default_constructible:is_noexcept_constructible<T>{};
+  
+  template<class T> struct is_trivially_default_constructible:is_trivially_constructible<T>{};
+  
+  template<class T> struct is_copy_constructible:is_constructible<T,const T&>{};
+  
+  template<class T> struct is_noexcept_copy_constructible:is_noexcept_constructible<T,const T&>{};
+  
+  template<class T> struct is_trivially_copy_constructible:is_trivially_constructible<T,const T&>{};
+  
+  template<class T> struct is_move_constructible:is_constructible<T,T&&>{};
+  
+  template<class T> struct is_noexcept_move_constructible:is_noexcept_constructible<T,T&&>{};
+  
+  template<class T> struct is_trivially_move_constructible:is_trivially_constructible<T,T&&>{};
+  
+  template<class T,class U> struct is_assignable:false_type{};
+  
+  template<class T,class U> struct is_assignable<typename conditional<false,decltype(declval<T>().operator=(declval<U>())),T>::type,U>:true_type{};
+  
+  template<class T,class U> struct is_noexcept_assignable:false_type{};
+  
+  template<class T,class U> struct is_noexcept_assignable<typename enable_if<!is_assignable<T,U>::value,T>::type,U>:false_type{};
+  
+  template<class T,class U> struct is_noexcept_assignable<typename enable_if<noexcept(declval<T>().operator=(declval<U>())),T>::type,U>:true_type{};
+  
+  template<class T,class U> struct is_trivially_assignable:false_type{};
+  //Overloads are compiler assisted
+  
+  template<class T> struct is_copy_assignable:is_assignable<T,const T&>{};
+  
+  template<class T> struct is_noexcept_copy_assignable:is_noexcept_assignable<T,const T&>{};
+  
+  template<class T> struct is_trivially_copy_assignable:is_trivially_assignable<T,const T&>{};
+  
+  template<class T> struct is_move_assignable:is_assignable<T,T&&>{};
+  
+  template<class T> struct is_noexcept_move_assignable:is_noexcept_assignable<T,T&&>{};
+  
+  template<class T> struct is_trivially_move_assignable:is_trivially_assignable<T,T&&>{};
+  
+  template<class T> struct is_destructible:false_type{};
+  
+  template<class T> struct is_destructible<typename conditional<false,decltype(declval<T>().~T(),T>::type>:true_type{};
+  
+  template<class T> struct is_noexcept_destructible:false_type{};
+  
+  template<class T> struct is_noexcept_destructible<typename enable_if<!is_destructible<T>::value,T>::type>:false_type{};
+  
+  template<class T> struct is_noexcept_destructible<typename conditional<false,noexcept(declval<T>().~T()),T>::type>::true_type{};
+  
+  template<class T> struct is_trivially_destructible:true_type{};
+  //Overloads are compiler assisted.
+  //Unlike other compiler assisted "is_trivially_<something>" metafunctions, generate Compiler Assisted Specialization to inherit from false_type
+  //If the destructor is non trivial.
+  
+  template<class T> struct has_virtual_destructor:false_type{};
+  //Overloads are compiler assisted
+  
+  template<class T,class U> struct is_swappable_with:false_type{};
+  
+  template<class T,class U> struct is_swappable_with<typename conditional<false,decltype(swap(declval<T>(),declval<U>())),T>::type,T>:true_type{};
+  
+  template<class T> struct is_swappable:is_swappable_with<T,T>{};
+  
+  template<class T,class U> struct is_noexcept_swappable_with:false_type{};
+  
+  template<class T,class U> struct is_noexcept_swappable_with<typename enable_if<noexcept(swap(declval<T>(),declval<U>())),T>::type,U>:true{};
+  
+  template<class T> struct is_noexcept_swappable:is_noexcept_swappable_with<T,T>{};
+  
  };
  using namespace operators;
   
