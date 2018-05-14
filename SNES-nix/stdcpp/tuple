@@ -1,0 +1,50 @@
+#ifndef __tuple_2018_05_14_18_10
+#define __tuple_2018_05_14_18_10
+#include <type_traits>
+namespace std{
+  template<size_t I,class T> struct tuple_element;
+
+  template<typename FirstType,typename... Types> struct tuple_struct{
+    FirstType value;
+    tuple_struct<Types> next;
+  };
+
+  template<typename LastType> struct tuple_struct<LastType>{
+    LastType value; 
+  };
+
+  template<typename... Types> class tuple{
+    
+    typedef tuple_struct<Types> value_type;
+    typedef tuple<Types> type;
+    tuple_struct<Types> value;
+  public:
+    tuple(value_type value):value(value){};
+    template<size_t I> using element = tuple_element<I,type>;
+    template<size_t I> using const_element = tuple_element<I,const type>;
+    
+    friend template<size_t I,typename Tuple> struct tuple_value;
+  };
+  
+  template<size_t I,typename... Types> struct tuple_element<I,tuple<Types>>{
+    template<size_t I,typename FirstType,typename... Rest> struct _types{
+      typedef typename _type<I-1,Rest>::type type;
+    };
+    template<typename FirstType,typename... Rest> struct _types<0,FirstType,Types>{
+      typedef FirstType type;
+    };
+    template<size_t I,typename FirstType> struct _types<I,FirstType>{};
+    template<typename FirstType> struct _types<0,FirstType>{
+      typedef FirstType type;
+    };
+    typedef typename _type<I,Types>::type type;
+  };
+  
+  template<typename I,typename... Types> struct tuple_value<I,tuple<Types>>{
+  
+  };
+  
+  
+};
+
+#endif
