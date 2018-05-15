@@ -37,20 +37,18 @@ namespace java{
     
     class ReferenceType:public Type{
         string name;
-        Class* base;
+        const Class& base;
     public:
-        ReferenceType(const string&,Class*);
+        ReferenceType(const string&,const Class&);
         TypeCategory getCategory()const override final;
         bool isPrimitive()const override final;
         const string& getDescriptor()const override;
-        const Class* getClass();
+        const Class& getClass()const;
     };
 
     class ClassType final:public ReferenceType{
     public:
-        ClassType(Class*);
-        ClassType();
-        
+        ClassType(const Class&);
     };
     
     
