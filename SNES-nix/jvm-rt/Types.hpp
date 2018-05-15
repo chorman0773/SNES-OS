@@ -4,6 +4,7 @@ using std::string;
 namespace java{
     class ClassFile;
     class Class;
+    class Type;
 
 
     enum class TypeCategory{
@@ -14,12 +15,24 @@ namespace java{
     enum class Primitive{
         Z, B, S, C, I, F, J, D
     };
+    
+    class TypeDescriptor final{
+    private:
+        const Type& type;
+        string desc;
+    public:
+        TypeDescriptor(const string&);
+        const Type& getType()const;
+        const string& getDesc()const;
+    };
 
     class Type{
         virtual bool isPrimitive()const=0;
         virtual TypeCategory getCategory()const=0;
         virtual const string& getDescriptor()const=0;
         virtual const Type& getActualType()const;
+        operator TypeDescriptor()const;
+        
     };
     
     class ReferenceType:public Type{
@@ -89,15 +102,7 @@ namespace java{
     };
     
     
-    class TypeDescriptor final{
-    private:
-        const Type& type;
-        string desc;
-    public:
-        TypeDescriptor(const string&);
-        const Type& getType()const;
-        const string& getDesc()const;
-    };
+    
     
     
     const SmallPrimitiveType BOOLEAN(Primitive::Z,"Z");
