@@ -4,12 +4,11 @@
 
 #include "Invocation.hpp"
 #include "Types.hpp"
-#include "Objects.hpp"
-#include "ClassFile.hpp"
 
 using std::string;
 namespace java{
-  
+  class Class;
+  class MethodRef;
   class MethodHandle{
   private:
     const Class& cl;
@@ -17,7 +16,7 @@ namespace java{
   public:
     MethodHandle(const Class&,const MethodRef&);
     MethodHandle(const string&);
-    MethodHandle(const string&,const string&,const initializer_list<TypeDescriptor>&,Type&);
+    MethodHandle(const string&,const string&,const initializer_list<TypeDescriptor>&,const TypeDescriptor&);
     Invocation invokespecial(const Invocation&);
     Invocation invokevirtual(const Invocation&);
     Invocation invokedynamic(const Invocation&);
@@ -31,10 +30,21 @@ namespace java{
     bool checkValid();
   };
   
-  
-  
+  class FieldHandle{
+  private:
+    const Class& cl;
+    const FieldRef& ref;
+  public:
+    FieldHandle(const Class&,const FieldRef&);
+    FieldHandle(const string&);
+    FieldHandle(const string&,const string&,const TypeDescriptor&);
+    void getfield(Invocation&);
+    void getstatic(Invocation&);
+    bool checkGetField(const Invocation&);
+    bool checkGetStatic(const Invocation&);
+    bool checkValid();
+  };
 
-  
 };
 
 #endif
