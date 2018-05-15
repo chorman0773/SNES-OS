@@ -5,6 +5,7 @@
 #include "Invocation.hpp"
 #include "Types.hpp"
 #include "Objects.hpp"
+#include "ClassFile.hpp"
 
 using std::string;
 namespace java{
@@ -16,7 +17,7 @@ namespace java{
   public:
     MethodHandle(const Class&,const MethodRef&);
     MethodHandle(const string&);
-    MethodHandle(const string&,const string&,const initializer_list<Type*>&,Type&);
+    MethodHandle(const string&,const string&,const initializer_list<TypeDescriptor>&,Type&);
     Invocation invokespecial(const Invocation&);
     Invocation invokevirtual(const Invocation&);
     Invocation invokedynamic(const Invocation&);
@@ -27,6 +28,7 @@ namespace java{
     bool checkInvokeDynamic(const Invocation&);
     bool checkInvokeStatic(const Invocation&);
     bool checkInvokeInterface(const Invocation&);
+    bool checkValid();
   };
   
   
