@@ -476,7 +476,9 @@ namespace std{
   
   template<class Ret,class... Args> struct is_invocable_r<Ret,Ret(Args...),Args>:true_type{};
   
-  template<class Ret,class T,class... Args> struct is_invocable_r<typename enable_if<is_same<decltype((declval<T>()(declval<Args>()...))),Ret>::value,Ret>::type,T,Args>:true_type{};
+  template<class Ret,class T,class... Args> concept InvocableReturnType = requires(T t,Args... a){
+    {t(std::foward(a)...};}->Ret;
+  }
   
   template<class T,class... Args> struct is_nothrow_invocable:false_type{};
   
@@ -488,8 +490,11 @@ namespace std{
   
   template<class Ret,class... Args> struct is_nothrow_invocable_r<Ret,Ret(Args...)noexcept,Args>:true_type{};
   
-  template<class Ret,class T,class... Args> struct is_nothrow_invocable_r<typename enable_if<nothrow(declval<T>()(declval<Args>()...)),Ret>::type,
-      typename enable_if<is_same<decltype((declval<T>()(declval<Args>()...)::value,T>::type,Args>:true_type{};
+  template<class Ret,class T,class... Args> concept NoThrowInvocable = requires(T t,Args... a){
+    {t(std::forward(a)...);}noexcept ->Ret;
+  }
+  
+  NoThrowInvocable{Ret,T,Args...} struct is_nothrow_invocable_r<Ret,T,Args>:true_type{};
   
    
   template<size_t Len,class First,class... Remaining> struct alligned_union{
@@ -531,7 +536,7 @@ namespace std{
     [[stdcpp::optimizaiton_candidate,no_odr]] template<typename Base> false_type test_is_base_of(const void*);
 
     template<typename Base,typename Derived> using is_base_of_target = 
-      decltype(test_is_base_of<Base>(declval<typename add_pointer<typename remove_cvref<Derived>::type>::type>());
+      decltype((test_is_base_of<Base>(declval<typename add_pointer<typename remove_cvref<Derived>::type>::type>()));
   
   };
   
