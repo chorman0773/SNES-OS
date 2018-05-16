@@ -165,17 +165,35 @@ struct SymMD_ClassMethod{
   uint8_t type;
   uint16_t length;
   uint8_t flags;
-  uint16_t reserved[3];
+  uint8_t qualifications;
+  uint8_t reserved[2];
   uint16_t symbolOrVtableEntry;
   char declTypeAndName[];
 };
 
-struct SymMD_VTableOffset{
+struct SymMD_ClassDeclarator{
   uint16_t symbol;
   uint8_t type;
   uint16_t length;
-  
+  uint8_t declTag;
 };
+
+struct SymMD_EnumUnderlyingType{
+  uint16_t symbol;
+  uint8_t type;
+  uint16_t length;
+  char typeDescriptor;
+};
+
+struct SymMD_ClassSuperType{
+  uint16_t symbol;
+  uint8_t type;
+  uint16_t length;
+  uint8_t inheritenceFlags;
+  uint16_t superTypesymbol;
+};
+
+
 
 
 #endif
