@@ -27,11 +27,11 @@ public:
   }
 };
 
-template<typename ReturnType,typename... ArgsType> lambda_expression<void,lambda_Tnoexcept,ReturnType,void,ArgsType...> struct lambda_Texpression{
+template<typename ReturnType,typename... ArgsType> struct lambda_Texpression<void,lambda_Tnoexcept,ReturnType,void,ArgsType...>{
   using FunctionType = ReturnType(ArgsType...)noexcept;
   FunctionType& targetFunctionRef;
 public:
-  ReturnType(FunctionType& targetRef):targetFunctionRef(targetRef){}
+  lambda_Texpression(FunctionType& targetRef):targetFunctionRef(targetRef){}
   operator FunctionType*(){
     return &targetFunctionRef;
   }
@@ -40,6 +40,28 @@ public:
   }
 };
 
+template<typename ReturnType,typename Captures,typename... ArgsTypes> struct lambda_Texpression<void,void,ReturnType,Captures,ArgsType...>{
+  using FunctionType = ReturnType(Captures,ArgsType...);
+  FunctionType& targetFunctionRef;
+  Captures& captures;
+public:
+  lambda_Texpression(Captures& c,FunctionType& targetRef):c(captures),targetFunctionRef(targetRef){}
+  ReturnType operator()(ArgsType... args){
+   return targetFunctionRef(captures,std::forward(args)...); 
+  }
+};
+
+
+template<typename ReturnType,typename Captures,typename... ArgsTypes> struct lambda_Texpression<void,lambda_Tnoexcept,ReturnType,Captures,ArgsType...>{
+  using FunctionType = ReturnType(Captures&,ArgsType...)noexcept;
+  FunctionType& targetFunctionRef;
+  Captures& captures;
+public:
+  lambda_Texpression(Captures& c,FunctionType& targetRef):c(captures),targetFunctionRef(targetRef){}
+  ReturnType operator()(ArgsType... args)noexcept{
+   return targetFunctionRef(captures,std::forward(args)...); 
+  }
+};
 
 
 
