@@ -2,6 +2,7 @@
 #define __type_traits_2018_05_14_10_27
 #include <cstdlib>
 #include <utility>
+#include <type_info>
 namespace std{
 
   [[stdcpp::optimization_candidate,no_odr_use]] template<typename T> T&& declval();
@@ -255,8 +256,14 @@ namespace std{
    
    //SFINAE Overload for is_scalar and is_void
    [[deprecated("LiteralType is Deprecated as of C++17")]] template<typename T>
-    struct is_literal_type<typename enable_if<is_scalar<T>::value||is_void<T>::value,T>::type>:true_type{};
-   //Overloads are Compiler Assisted
+    struct is_literal_type<typename enable_if<is_void<T>::value,T>::type>:true_type{};
+    
+    template<typename T> constexpr bool is_literal_type_helper(T){
+      return true;
+    }
+    
+   [[deprecated("LiteralType is Deprecated as of C++17")]] template<typename T>
+    struct is_literal_type<typename conditional<false,decltype(is_literal_type_helper<T>),T>::type>:true_type{};
    
    template<typename T> struct has_unique_object_representation:false_type{};
    
@@ -270,7 +277,17 @@ namespace std{
    };
    template<typename T> struct is_empty<typename enable_if<is_class<T>::value&&(sizeof(is_empty_helper<T>)==1),T>::type>:true_type{};
    
-   template<typename T> struct is_polymorphic:false_type{};
+   template<typename T> constexpr bool is_polymorphic_helper(){
+    typeid(*decltype<T*>());
+    return true;
+   }
+   
+   
+   template<typename T> struct is_polymorphic:true_type{};
+   
+   
+   template<typename T> struct is_polymorphic<typename enable_if<is_polymorphic_helper<T>(),T>::type>:false_type{};
+   
    
    //Class Overloads are Compiler assisted
    
@@ -295,6 +312,10 @@ namespace std{
    template<typename T> struct is_final<typename conditional<!is_class<T>::value,void_t<is_final_helper<T>>,T>::type>:false_type{};
    
    template<typename T> struct is_final<typename enable_if<is_class<T>::value,T>::type>:true_type{};
+   //Generate Compiler Assisted Overloads for final unions.
+   
+   template<typename T> struct is_empty<typename enable_if<is_final<T>::value,T>::type>:false_type{};
+   //Since I can't check if a final type is empty, leave it up to the compiler
    
    template<typename T> struct is_aggregate:false_type{};
    
