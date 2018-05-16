@@ -2,7 +2,6 @@
 #define __lambdas_hpp_2018_05_16_19_20
 
 #include <utility>
-#include <tuple>
 
 template<size_t I> struct lambda_template_parameter{
   constexpr static size_t index = I;
