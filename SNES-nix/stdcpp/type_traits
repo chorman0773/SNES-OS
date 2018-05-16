@@ -665,6 +665,14 @@ namespace std{
   
   template<class From,class To> struct is_convertible<typename conditional<false,decltype(declval<From>().operator To()),From>::type,To>:true_type{};
   
+  template<class T,class... Args> struct invoke_result;
+  
+  template<class T,class... Args> struct invoke_result<typename conditional<false,decltype(declval<T>()(declval<Args>()...)),T>::type>:echotype<decltype(declval<T>()(declval<Args>()...))>{};
+  
+  template<class> struct result_of;
+  
+  template<class F,class... Args> struct result_of<F(Args...)>: invoke_result<F(Args...),Args...>{};
+  
  };
  using namespace operators;
  
