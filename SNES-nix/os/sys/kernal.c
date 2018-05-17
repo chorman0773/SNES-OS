@@ -65,14 +65,27 @@ void irqHandler()__attribute__(biosHandler("IRQ")){
     __asm__ volatile("RTI");
 }
 
-void brkHandler()__attribute__(biosHandler("BRK")){
-    unsigned short swi;
-    __asm__ volatile("STA %0":"=r"(swi));
+void brkHandler(unsigned short swi,...)__attribute__(biosHandler("BRK")){
     switch(swi){
+        case 0x20:
+            printf("Read access violation at %p",esi);
+            abort();
+        break;
+        case 0x21:
+            printf("Write access violation at %p",esi);
+            abort();
+        break;
+        case 0x22:
+            printf("Execute access violation at %p",esi);
+            abort();
+        break;
         case 0x40:
             int code = ebx;
-            
-        ;
+            exit(code);
+        break;
+        case 0x41:
+            abort();
+        break;
     }
     
     __asm__ volatile("CLI");
@@ -86,7 +99,8 @@ void syscallHandler(unsigned short syscall,...)__attribute__(biosHandler("syscal
     switch(syscall){
         case 0:
             const char* name = va_arg(args,const char*);
-            
+            int mode = va_arg(args,int);
+        break;
     }
     va_end(args);
     __asm__ volatile("CLI");
@@ -99,7 +113,7 @@ void shutdownHandler(){
 
 void boot(unsigned short snesBiosVersion, unsigned short mmuCoreVersion,int bootArgc,const char** bootArgv)__attribute__((noreturn)){
       void(*irq)() = irqHandler;
-      void(*brk)(unsigned short) = brkHandler;
+      void(*brk)(unsigned int,...) = brkHandler;
       void(*syscall)(unsigned short,...) = syscallHandler;
       void(*shutdown)() = shutdownHandler;
       path* devs[4];
