@@ -41,6 +41,12 @@ typedef struct{
     int8_t d;
 }mtxParams;
 
+typedef struct{
+    uint8_t w;
+    uint8_t h;
+    uint8_t pixels[];
+}gfxImage;
+
 extern pallate* const cgram;
 extern screen* const vram;
 extern mtxParams* const mode7mtx;
@@ -51,6 +57,7 @@ void computePallate(pallate*,screen*);
 void rotateScreen(int);
 void moveScreen(int,int);
 void strechScreen(float,float);
+void draw(gfxImage*,uint8_t,uint8_t,uint8_t,uint8_t);
 
 void nmiRoutine();
 
