@@ -1,6 +1,6 @@
 
 namespace std{
-    template<typename T> class basic_string{
+    template<typename T,typename traits=char_traits<T>,typename allocator=std::default_allocator<T>> class basic_string{
         int len;
         T* content;
     public:
