@@ -1,0 +1,40 @@
+#ifndef __filesystem_2018_05_18_10_14
+#define __filesystem_2018_05_18_10_14
+#include <string>
+namespace std{
+  namespace filesystem{
+    namespace _native{
+     class native_path;
+    };
+    class path{
+      using value_type = char;
+      using string_type = basic_string<char>;
+      using const_iterator = string_type::const_iterator;
+      using iterator = const_iterator;
+      _native::native_path& underlying;
+      enum format{
+        native_format,
+        generic_format,
+        auto_format
+      };
+      constexpr value_type separator = '/';
+      path()noexcept;
+      path(const path&);
+      path(path&&)noexcept;
+      path(string_type&&,format=auto_format);
+      template<class InputItr> path(InputItr first,InputItr last,format f=auto_format):path(string(first,last),f){}
+      ~path();
+      path& operator=(const path&);
+      path& operator=(path&&);
+      path& operator=(string_type&&);
+      path& assign(string_type&&);
+      template< class InputIt > path& assign( InputIt first, InputIt last ){
+          return assign(string(first,last));
+      }
+      path& operator/=(const path&);
+      
+    };
+  };
+};
+
+#endif
