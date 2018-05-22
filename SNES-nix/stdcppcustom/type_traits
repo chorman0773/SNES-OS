@@ -44,11 +44,9 @@ namespace std{
     template<typename T,typename U> struct get_type_offset: integral_constant<std::ptrdiff_t,-1>{};
     
     template<typename T> struct get_type_offset<T,T> : integral_constant<std::ptrdiff_t,0>{};
-    constexpr template<typename T,typename U> std::ptrdiff_t getNonPolymorphicOffset(){
-      return ((U*)static_cast<T*>(nullptr))-static_cast<T*>(nullptr);
-    }
-    template<typename T,typename U> struct get_type_offset<typename std::enable_if<std::is_base_of<T,U>::value,T>::type,
-      typename std::enable_if<!std::is_polymorphic<U>::value,U>::type>
+    //Compiler Assisted Overloads used
+    
+    
     
   };
 
