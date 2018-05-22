@@ -217,6 +217,46 @@ namespace std{
       template<typename A,class B,typename... Args> struct is_rvalue_ref_member_function<A B::*(Args...)&& volatile>:true_type{};
       template<typename A,class B,typename... Args> struct is_rvalue_ref_member_function<A B::*(Args...)&& const volatile>:true_type{};
       
+      template<typename T> using is_refqualified_member_Function = std::disjunction<is_lvalue_ref_member_function<T>,is_rvalue_ref_member_function<T>>;
+      
+      [[stdcpp::no_odr]] template<typename T> void from_member_function_pointer(T);
+      
+      template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...) mfp){
+        return [mfp](B& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
+      }
+      template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)const mfp){
+        return [mfp](const B& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
+      }
+      template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)volatile mfp){
+        return [mfp](volatile B& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
+      }
+      template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)const volatile mfp){
+        return [mfp](const volatile B& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
+      }
+      template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)& mfp){
+        return [mfp](B& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
+      }
+      template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)& const mfp){
+        return [mfp](const B& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
+      }
+      template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)& volatile mfp){
+        return [mfp](volatile B& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
+      }
+      template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)& const volatile mfp){
+        return [mfp](const volatile B& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
+      }
+      template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)&& mfp){
+        return [mfp](B&& b,Args... args)->A}return b.*mfp(std::forward<Args>(args)...);};
+      }
+      template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)&& const mfp){
+        return [mfp](const B&& b,Args... args)->A}return b.*mfp(std::forward<Args>(args)...);};
+      }
+      template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)&& volatile mfp){
+        return [mfp](volatile B&& b,Args... args)->A}return b.*mfp(std::forward<Args>(args)...);};
+      }
+      template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)&& const volatile mfp){
+        return [mfp](const volatile B&& b,Args... args)->A}return b.*mfp(std::forward<Args>(args)...);};
+      }
     };
     
   };
