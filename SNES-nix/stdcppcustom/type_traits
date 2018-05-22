@@ -48,6 +48,41 @@ namespace std{
     template<typename T,typename U> struct get_type_offset<typename std::enable_if<!std::is_base<T,U>::value,T>::type,U>:integral_constant<std::ptrdiff_t,-1>{};
     //Compiler Assisted Overloads used
     
+    namespace operators{
+      template<typename T,typename U=T> struct has_eq:false_type{};
+      template<typename T,typename U> struct has_eq<typename std::conditional<false,decltype(declval<const T>()==declval<const U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_ne:false_type{};
+      template<typename T,typename U=T> struct has_ne<typename std::conditional<false,decltype(declval<const T>()!=declval<const U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_lt:false_type{};
+      template<typename T,typename U=T> struct has_lt<typename std::conditional<false,decltype(declval<const T>()<declval<const U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_le:false_type{};
+      template<typename T,typename U=T> struct has_le<typename std::conditional<false,decltype(declval<const T>()<=declval<const U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_ge:false_type{};
+      template<typename T,typename U=T> struct has_ge<typename std::conditional<false,decltype(declval<const T>()>=declval<const U>()),T>::type,U>:true_type{};
+     
+      template<typename T,typename U=T> struct has_gt:false_type{};
+      template<typename T,typename U=T> struct has_gt<typename std::conditional<false,decltype(declval<const T>()>declval<const U>()),T>::type,U>:true_type{};      
+      
+      template<typename T,typename U=T> struct has_multicompare:false_type{};
+      template<typename T,typename U=T> struct has_multicompare<typename std::conditional<false,decltype(declval<const T>()<=>declval<const U>()),T>::type,U>:true_type{};
+    };
+    template<typename T,typename U> struct is_comparable_with:false_type{};
+    template<typename T,typename U> struct is_comparable_with<typename std::enable_if<operators::has_multicompare<T,U>::value,T>::type,U>:true_type{};
+    template<typename T,typename U> struct is_comparable_with<typename std::enable_if<
+      std::conjunction<operators::has_eq<T,U>,operators::has_ne<T,U>,operators::has_lt<T,U>,operators::has_le<T,U>,
+        operators::has_ge<T,U>,operators::has_gt<T,U>>::value,T>::type,U>:true_type{};
+        
+    template<typename T> using is_comparable = is_comparable_with<T,T>;
+    
+    template<typename T,typename U> struct is_mutually_comparable:false_type{};
+    template<typename T> struct is_mutually_comparable<typename std::enable_if<is_comparable<T>::value,T>::type,T>:true_type{};
+    template<typename T,typename U> struct is_mutually_comparable<typename std::enable_if<is_comparable_with<T,U>::value,T>::type,
+      typename std::enable_if<is_comparable_with<U,T>::value,U>::type>:true_type{};
+    
   };
 
 };
