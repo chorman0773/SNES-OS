@@ -5,11 +5,11 @@
 #define PROC_Write 0x0002
 #define PROC_Exec 0x0010
 #ifdef __cplusplus
-#define __cdecl extern "C"
+#define __nativedecl [[bios_call]] extern "C"
 #else
-#define __cdecl
+#define __nativedecl __attribute__((bios_call))
 #endif
-#define __nativedecl __cdecl
+
 
 
 
