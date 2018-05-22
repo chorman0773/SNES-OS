@@ -22,8 +22,8 @@ In addition, the check variable gets the new type:
   And check is initialized with lambda_Texpression<lambda_Tconstexpr,void,lambda_Tnoexcept,bool,void>(main$lambda1);
   
 The type defines the following methods:
-  ```c++
-operator bool(*)()()noexcept -> which returns the address of the function.
+```c++
+operator bool(*)noexcept()()noexcept -> which returns the address of the function.
 and (because its constexpr and noexcept)
 constexpr bool operator()()noexcept.
 ```
