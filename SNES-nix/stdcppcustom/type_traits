@@ -69,6 +69,104 @@ namespace std{
       
       template<typename T,typename U=T> struct has_multicompare:false_type{};
       template<typename T,typename U=T> struct has_multicompare<typename std::conditional<false,decltype(declval<const T>()<=>declval<const U>()),T>::type,U>:true_type{};
+    
+      template<typename T,typename U=T> struct has_add:false_type{};
+      template<typename T,typename U> struct has_add<typename std::conditional<false,decltype(declval<T>()+declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_sub:false_type{};
+      template<typename T,typename U> struct has_sub<typename std::conditional<false,decltype(declval<T>()-declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_mul:false_type{};
+      template<typename T,typename U> struct has_mul<typename std::conditional<false,decltype(declval<T>()*declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_div:false_type{};
+      template<typename T,typename U> struct has_div<typename std::conditional<false,decltype(declval<T>()/declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_mod:false_type{};
+      template<typename T,typename U> struct has_mod<typename std::conditional<false,decltype(declval<T>()%declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_and:false_type{};
+      template<typename T,typename U> struct has_and<typename std::conditional<false,decltype(declval<T>()&declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_or:false_type{};
+      template<typename T,typename U> struct has_or<typename std::conditional<false,decltype(declval<T>()|declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_xor:false_type{};
+      template<typename T,typename U> struct has_xor<typename std::conditional<false,decltype(declval<T>()^declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_rshift:false_type{};
+      template<typename T,typename U> struct has_rshift<typename std::conditional<false,decltype(declval<T>()>>declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_lshift:false_type{};
+      template<typename T,typename U> struct has_lshift<typename std:conditional<false,decltype(declval<T>()<<declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U> struct has_assign:false_type{};
+      template<typename T,typename U> struct has_assign<typename std::conditional<false,decltype(declval<T&>()=declval<U>(),T>::type,U>:false_type{};
+      
+      template<typename T> using has_copy_assign = has_assign<T,const T&>;
+      template<typename T> using has_move_assign = has_assign<T,T&&>;
+      
+      template<typename T> struct has_preinc:false_type{};
+      template<typename T> struct has_preinc<typename std::conditional<false,decltype(++declval<T&>()),T>::type>:true_type{};
+      
+      template<typename T> struct has_postinc:false_type{};
+      template<typename T> struct has_postinc<typename std::conditional<false,decltype(declval<T&>()++),T>::type>:true_type{};
+      
+      template<typename T> struct has_predec:false_type{};
+      template<typename T> struct has_predec<typename std::condtional<false,decltype(--declval<T&>()),T>::type>:true_type{};
+      
+      template<typename T> struct has_postdec:false_type{};
+      template<typename T> struct has_postdec<typename std::conditional<false,decltype(declval<T&>()--),T>::type>:true_type{};
+      
+      template<typename T> struct has_address_of:false_type{};
+      template<typename T> struct has_address_of<typename std::conditional<false,decltype(&declval<T>()),T>::type>:true_type{};
+      
+      template<typename T> struct has_dereference:false_type{};
+      template<typename T> struct has_dereference<typename std::conditional<false,decltype(*declval<T>()),T>::type>:true_type{};
+      
+      template<typename T> struct has_umn:false_type{};
+      template<typename T> struct has_umn<typename std::conditional<false,decltype(-declval<T>()),T>::type>:true_type{};
+      
+      template<typename T> struct has_not:false_type{};
+      template<typename T> struct has_not<typename std::conditional<false,decltype(~declval<T>()),T>::type>:true_type{};
+      
+      template<typename T,typename U=unsigned int> struct has_index:false_type{};
+      template<typename T,typename U> struct has_index<typename std::conditional<false,decltype(declval<T>()[declval<U>()]),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_addassign:false_type{};
+      template<typename T,typename U> struct has_addassign<typename std::conditional<false,decltype(declval<T&>()+=declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_subassign:false_type{};
+      template<typename T,typename U> struct has_subassign<typename std::conditional<false,decltype(declval<T&>()-=declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_mulassign:false_type{};
+      template<typename T,typename U> struct has_mulassign<typename std::conditional<false,decltype(declval<T&>()*=declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_divassign:false_type{};
+      template<typename T,typename U> struct has_divassign<typename std::conditional<false,decltype(declval<T&>()/=declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_modassign:false_type{};
+      template<typename T,typename U> struct has_modassign<typename std::conditional<false,decltype(declval<T&>()%=declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_andassign:false_type{};
+      template<typename T,typename U> struct has_andassign<typename std::conditional<false,decltype(declval<T&>()&=declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_orassign:false_type{};
+      template<typename T,typename U> struct has_orassign<typename std::conditional<false,decltype(declval<T&>()|=declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_xorassign:false_type{};
+      template<typename T,typename U> struct has_xorassign<typename std::conditional<false,decltype(declval<T&>()^=declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_rshiftassign:false_type{};
+      template<typename T,typename U> struct has_rshiftassign<typename std::conditional<false,decltype(declval<T&>()>>=declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T,typename U=T> struct has_lshiftassign:false_type{};
+      template<typename T,typename U> struct has_lshiftassign<typename std::conditional<false,decltype(declval<T&>()<<=declval<U>()),T>::type,U>:true_type{};
+      
+      template<typename T> struct has_negation:false_type{};
+      template<typename T> struct has_negation<typename std::conditional<false,decltype(!declval<T>()),T>::type>:true_type{};
+      
+      
     };
     template<typename T,typename U> struct is_comparable_with:false_type{};
     template<typename T,typename U> struct is_comparable_with<typename std::enable_if<operators::has_multicompare<T,U>::value,T>::type,U>:true_type{};
@@ -81,7 +179,45 @@ namespace std{
     template<typename T,typename U> struct is_mutually_comparable:false_type{};
     template<typename T> struct is_mutually_comparable<typename std::enable_if<is_comparable<T>::value,T>::type,T>:true_type{};
     template<typename T,typename U> struct is_mutually_comparable<typename std::enable_if<is_comparable_with<T,U>::value,T>::type,
-      typename std::enable_if<is_comparable_with<U,T>::value,U>::type>:true_type{};
+    typename std::enable_if<is_comparable_with<U,T>::value,U>::type>:true_type{};
+    
+    namespace members_ptrs{
+      template<typename T> struct is_const_member_function:false_type{};
+      template<typename A,class B,typename... Args> struct is_const_member_function<A B::*(Args...)const>:true_type{};
+      template<typename A,class B,typename... Args> struct is_const_member_function<A B::*(Args...)const volatile>:true_type{};
+      template<typename A,class B,typename... Args> struct is_const_member_function<A B::*(Args...)& const>:true_type{};
+      template<typename A,class B,typename... Args> struct is_const_member_function<A B::*(Args...)&& const>:true_type{};
+      template<typename A,class B,typename... Args> struct is_const_member_function<A B::*(Args...)& const volatile>:true_type{};
+      template<typename A,class B,typename... Args> struct is_const_member_function<A B::*(Args...)&& const volatile>:true_type{};
+      
+      template<typename T> struct is_volatile_member_function:false_type{};
+      template<typename A,class B,typename... Args> struct is_volatile_member_function<A B::*(Args...)volatile>:true_type{};
+      template<typename A,class B,typename... Args> struct is_volatile_member_function<A B::*(Args...)const volatile>:true_type{};
+      template<typename A,class B,typename... Args> struct is_volatile_member_function<A B::*(Args...)& volatile>:true_type{};
+      template<typename A,class B,typename... Args> struct is_volatile_member_function<A B::*(Args...)&& volatile>:true_type{};
+      template<typename A,class B,typename... Args> struct is_volatile_member_function<A B::*(Args...)& const volatile>:true_type{};
+      template<typename A,class B,typename... Args> struct is_volatile_member_function<A B::*(Args...)&& const volatile>:true_type{};
+      
+      template<typename T> struct is_constvolatile_member_function:false_type{};
+      template<typename A,class B,typename... Args> struct is_constvolatile_member_function<A B::*(Args...)const volatile>:true_type{};
+      template<typename A,class B,typename... Args> struct is_constvolatile_member_function<A B::*(Args...)& const volatile>:true_type{};
+      template<typename A,class B,typename... Args> struct is_constvolatile_member_function<A B::*(Args...)&& const volatile>:true_type{};
+      
+      template<typename T> using is_cvqualified_member_function = std::disjunction<is_const_member_function<T>,is_volatile_member_function<T>>;
+      
+      template<typename T> struct is_lvalue_ref_member_function:false_type{};
+      template<typename A,class B,typename... Args> struct is_lvalue_ref_member_function<A B::*(Args...)&>:true_type{};
+      template<typename A,class B,typename... Args> struct is_lvalue_ref_member_function<A B::*(Args...)& const>:true_type{};
+      template<typename A,class B,typename... Args> struct is_lvalue_ref_member_function<A B::*(Args...)& volatile>:true_type{};
+      template<typename A,class B,typename... Args> struct is_lvalue_ref_member_function<A B::*(Args...)& const volatile>:true_type{};
+      
+      template<typename T> struct is_rvalue_ref_member_function:false_type{};
+      template<typename A,class B,typename... Args> struct is_rvalue_ref_member_function<A B::*(Args...)&&>:true_type{};
+      template<typename A,class B,typename... Args> struct is_rvalue_ref_member_function<A B::*(Args...)&& const>:true_type{};
+      template<typename A,class B,typename... Args> struct is_rvalue_ref_member_function<A B::*(Args...)&& volatile>:true_type{};
+      template<typename A,class B,typename... Args> struct is_rvalue_ref_member_function<A B::*(Args...)&& const volatile>:true_type{};
+      
+    };
     
   };
 
