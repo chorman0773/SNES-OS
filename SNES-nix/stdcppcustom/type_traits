@@ -2,8 +2,54 @@
 
 namespace std{
   namespace custom{
+    using true_type = std::true_type;
+    using false_type = std::false_type;
+    using echo_type = std::echo_type;
+    using integral_constant = std::integral_constant;
     template<typename T> struct has_decay_type:
       std::boolean_constant<!std::is_same<t,typename std::decay<T>::type>::value>{};
+    template<typename T> struct is_iterable:false_type{};
+    template<typename T,std::size_t Size> struct is_iterable<T[Size]>:true_type{};
+    template<typename T,std::size_t Size> struct is_iterable<T(&)[Size]>:true_type{};
+    template<class T> struct is_iterable<typename std::conditional<false,
+        typename std::conditional<false,decltype(declval<T>().begin()),decltype(declval<T>().end())>::type,T>::type>:true_type{};
+    template<typename T> struct has_attachment : false_type{};
+    template<typename T> struct has_attachment<void*>:false_type{};
+    template<typename T> struct has_attachment<const void*>:true_type{};
+    template<typename T> struct has_attachment<volatile void*>:true_type{};
+    template<typename T> struct has_attachment<const volatile void*>:true_type{};
+    template<typename T> struct has_attachment<const T>:true_type{};
+    template<typename T> struct has_attachment<volatile T>:true_type{};
+    template<typename T> struct has_attachment<const volatile T>:true_type{};
+    template<typename T> struct has_attachment<T&&>:true_type{};
+    template<typename T> struct has_attachment<T&>:true_type{};
+    template<typename T> struct has_attachment<T*>:true_type{};
+    template<typename T> struct has_attachment<T[]>:true_type{};
+    template<typename T,std::size_t N> struct has_attachment<T[N]>:true_type{};
+    
+    template<typename T> struct remove_attachments : echo_type<T>{};
+    template<> struct remove_attachments<void*> : echo_type<void*>{};
+    template<> struct remove_attachments<const void*>:echo_type<void*>{};
+    template<> struct remove_attachments<volatile void*>:echo_type<void*>{};
+    template<> struct remove_attachments<const volatile void*>:echo_type<void*>{};
+    template<typename T> struct remove_attachments<const T>:echo_type<typename remove_attachments<T>::type>{};
+    template<typename T> struct remove_attachments<volatile T>:echo_type<typename remove_attachments<T>::type>{};
+    template<typename T> struct remove_attachments<const volatile T>:echo_type<typename remove_attachments<T>::type>{};
+    template<typename T> struct remove_attachments<T*>:echo_type<typename remove_attachments<T>::type>{};
+    template<typename T> struct remove_attachments<T&>:echo_type<typename remove_attachments<T>::type>{};
+    template<typename T> struct remove_attachments<T&&>:echo_type<typename remove_attachments<T>::type>{};
+    template<typename T> struct remove_attachments<T[]>:echo_type<typename remove_attachments<T>::type>{};
+    template<typename T,std::size_t N> struct remove_attachmenst<T[N]>:echo_type<typename remove_attachments<T>::type>{};
+    
+    template<typename T,typename U> struct get_type_offset: integral_constant<std::ptrdiff_t,-1>{};
+    
+    template<typename T> struct get_type_offset<T,T> : integral_constant<std::ptrdiff_t,0>{};
+    constexpr template<typename T,typename U> std::ptrdiff_t getNonPolymorphicOffset(){
+      return ((U*)static_cast<T*>(nullptr))-static_cast<T*>(nullptr);
+    }
+    template<typename T,typename U> struct get_type_offset<typename std::enable_if<std::is_base_of<T,U>::value,T>::type,
+      typename std::enable_if<!std::is_polymorphic<U>::value,U>::type>
+    
   };
 
 };
