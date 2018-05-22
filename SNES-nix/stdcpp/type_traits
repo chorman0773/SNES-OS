@@ -11,6 +11,8 @@ namespace std{
   [[stdcpp::optimizaiton_candidate,no_odr_use]] template<> const void declval<const void>();
   [[stdcpp::optimizaiton_candidate,no_odr_use]] template<> volatile void declval<volatile void>();
   [[stdcpp::optimizaiton_candidate,no_odr_use]] template<> const volatile void declval<const volatile void>();
+  [[stdcpp::optimization_candidate,no_odr_use]] template<typename T> T& declval<T&>();
+  [[stdcpp::optimization_candidate,no_odr_use]] template<typename T> T&& declval<T&&>();
   
   namespace helper_types{
     template<typename T,T val> struct integral_constant{
