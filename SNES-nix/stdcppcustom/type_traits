@@ -1,0 +1,9 @@
+#include <type_traits>
+
+namespace std{
+  namespace custom{
+    template<typename T> struct has_decay_type:
+      std::boolean_constant<!std::is_same<t,typename std::decay<T>::type>::value>{};
+  };
+
+};
