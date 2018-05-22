@@ -1,0 +1,56 @@
+When you define class A, the classes members are stored adjacent to the start of the class.
+However, if you defined B to extend A (when A is not polymorphic) a B* is not exactly equal to an A*. Instead, a B* can
+  be converted to an A* by adding some offset, which is usually 0 (but may not be), 
+  if A has no superclass, and B has only A as a superclass.
+  This works because at no point will an A* ever be considered a B* in reverse, since the only case this can occur is if B* 
+  is a polymorphic pointer.
+  
+However, this cannot be done if A is a polymorphic type (defines or inherits, at least one virtual method)
+  since B might define a function, which overrides a function in A, so converting a B* to an A* cannot be trivial like this.
+  Instead, a class offset table is used. The start of a Polymorphic class contains a pointer to its class information,
+  this pointer points to all information necessary to use it in a polymorphic context, which includes the class name (for rtti),
+  the class information, and the class offset table.
+  This table maps different classes to the different offsets in the object's data.
+  The table may look (not exactly) like this, if A is a polymorphic type, and is B's only base class.
+  This table is the case if A is 6 bytes long (so defines a virtual function that is not a virtual destructor and a 2 byte member)
+  As well as a virtual destructor
+  B class offsets
+  destructor (+4) (Because Polymorphic types should almost always have a virtual destructor, so a special entry is added for
+    the destructor (always 4 bytes long for the virtual function address of the current classes' dtor), does not exist)
+  A (+8)
+  B (+14)
+  And assuming the special symbol destructor is symbol 0, A is symbol 1, and B is symbol 2, will have the following memory 
+  representation:
+  [03 00, [00 00, 04 00], [01 00, 08 00], [02 00, 0E 00]]
+  
+  The actual class information in this case will be
+  [
+  [pointer to name string (usually in cdata)],
+  [03 00,
+    [00 00, 04 00], 
+    [01 00, 08 00],
+    [02 00, 0E 00]
+  ]
+  ]
+  
+  In addition, the virtual functions are stored in line with the polymorphic type, and before any data-members of the specific
+  class which defines the first of those functions.
+  
+  So in order to access the first data member of A* a, from this setup, the following pseudocode is used (1 polymorphic member)
+  
+  load the address of a into esi
+  load the value at a into eax (4-byte)
+  add 4 eax
+  Load the 2-byte value at eax into Y
+  add 2 to eax
+  for n in [0,Y)
+    if the 2-byte value at eax is equal to 1, then add 2 to eax and load the 2-byte value there to A and exit loop
+    otherwise add 4 to eax and continue.
+ Add 4 to A, and transfer to Y
+ load [esi],Y
+ 
+ The bytecode which has this effect is (where at the start X is the offset from ebp of a, and Y is that offset+2):
+ LDA ebp,X
+ STA esi
+ LDA ebp,Y
+ STA si
