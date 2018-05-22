@@ -17,9 +17,11 @@ Produces 1 synthetic function:
   }
 In addition, the check variable gets the new type:
   
+  ```c++
   lambda_Texpression<lambda_Tconstexpr,void,lambda_Tnoexcept,bool,void>
+  ```
   
-  And check is initialized with lambda_Texpression<lambda_Tconstexpr,void,lambda_Tnoexcept,bool,void>(main$lambda1);
+  And check is initialized with `lambda_Texpression<lambda_Tconstexpr,void,lambda_Tnoexcept,bool,void>(main$lambda1);`
   
 The type defines the following methods:
 ```c++
