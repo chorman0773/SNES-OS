@@ -49,8 +49,37 @@ However, this cannot be done if A is a polymorphic type (defines or inherits, at
  Add 4 to A, and transfer to Y
  load [esi],Y
  
- The bytecode which has this effect is (where at the start X is the offset from ebp of a, and Y is that offset+2):
- LDA ebp,X
- STA esi
- LDA ebp,Y
- STA si
+ The following raw assembly code which has this effect is (where at the start X is the offset from ebp of a, and Y is that offset+2):
+   LDA ebp,X
+   STA esi
+   LDA ebp,Y
+   STA si
+   LDX 2
+   LDA [esi]
+   STA eax
+   LDA [esi],X
+   STA ax
+   LDA 4
+   STA ebx
+   STZ bx
+   JSL add32$BIOS
+   LDA 2
+   STA ebx
+   LDY [eax]
+   JSL add32$BIOS
+   LDA 0
+   SUB Y
+   BRZ +43
+   LDA [eax]
+   EOR 1
+   BRNZ +14
+   LDA 2
+   STA ebx
+   JSL add32$BIOS
+   LDA [eax]
+   BRA +16
+   LDA 4
+   STA ebx
+   JSL add32$BIOS
+   ADD 1
+   BRA -47
