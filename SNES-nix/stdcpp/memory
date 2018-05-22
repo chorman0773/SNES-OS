@@ -1,0 +1,41 @@
+#ifndef __memory_2018_05_22_15_47
+#define __memory_2018_05_22_15_47
+#include <type_traits>
+namespace std{
+  template<typename T> struct default_deleter{
+    constexpr default_deleter() noexcept = default;
+    template<typename U> default_deleter(const default_deleter<typename std::enable_if<std::is_base<T,U>::value,U>::type>& t)noexcept{}
+    template<typename U> default_deleter(default_deleter<typename std::enable_if<std::is_base<T,U>::value,U>::type>&& t)noexcept{}
+    void operator()(T* t){
+      delete t;
+    }
+  };
+  template<typename T> struct default_deleter<T[]>{
+    constexpr default_deleter() noexcept = default;
+    template<typename U> default_deleter(const default_deleter<typename std::enable_if<std::is_base<T,U>::value,U[]>::type>& t)noexcept{}
+    template<typename U> default_deleter(default_deleter<typename std::enable_if<std::is_base<T,U>::value,U[]>::type>&& t)noexcept{}
+    template<typename U>  void operator()(typename std::enable_if<std::is_convertable<T(*)[],U(*)[]>::value,U>::type* t){
+      delete[] t;
+    }
+  };
+  
+  template<typename T,template Deleter=default_deleter<T>> struct unique_ptr{
+  private:
+    typedef typename std::remove_reference<T>::type type;
+    typedef type* pointer;
+    
+    pointer value;
+    Deleter del;
+  public:
+    unique_ptr(nullptr_t=nullptr):value(nullptr){}
+    explicit unique_ptr(pointer p):value(p){}
+    
+    ~unique_ptr(){
+      if(value!=nullptr)
+        del(value);
+    }
+  };
+
+};
+
+#endif
