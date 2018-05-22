@@ -7,7 +7,7 @@ void __va_start(va_list* list,void* last_arg,size_t size){
 	void** bp = (void**) ebp;
 	void* frameSp = *bp;
 	void* frameBp = *((void**)*bp);
-	void* argsList = *((void**)((char*)last_arg)+size));
+	void* argsList = (void*)((void**)((char*)last_arg)+size)+1);
 	list->bp = frameBp;
 	list->lastArg = last_arg;
 	list->buff = argsList;
