@@ -27,7 +27,7 @@ The type defines the following methods:
 ```c++
 operator bool(*)noexcept()()noexcept -> which returns the address of the function.
 and (because its constexpr and noexcept)
-constexpr bool operator()()noexcept.
+constexpr bool operator()()noexcept;
 ```
  
 Example with captures
@@ -80,5 +80,33 @@ The construction of the expression, is even more interesting. From here on, the 
   notice that despite the fact that mutable was used, it doesn't remove the const qualifier from val,
   instead it generates a new dummy variable which has a very interesting name.
   
+  The synthetic names of the lambda functions and the mutable lambda captures are given by:
+  
+  ```
+  <name of defining function>$lambda<lambda number> for the lambda expression's underlying function
+  and <lambda name>$<variable name> for mutable captured variables.
+  ```
+  
+  The tuples are used for captures for no real reason.
+  
+  Finally, templates and "auto" parameters define a family of functions.
+  
+  Specifically, the following lambda definition
+  ```c++
+    auto lambda = [](auto val){return val+val};
+  ```
+  This does not define a synthetic lambda function, but instead inlines the expression directly into the lambda
+  
+  And the following lambda types:
+  ```c++
+  template<typename T> main$lambda3$template_parameters
+  lambda_Texpression<void,main$lambda3$template_parameters,void,lambda_Tplaceholder_decltype_auto,lambda_Tplaceholder_template_0>
+  ```
+  
+  Which has the following lone method
+  
+  ```c++
+  template<typename T> decltype(auto) operator()(T val)
+  ```
   
   
