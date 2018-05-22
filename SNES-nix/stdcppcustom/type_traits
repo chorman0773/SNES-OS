@@ -257,6 +257,17 @@ namespace std{
       template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)&& const volatile mfp){
         return [mfp](const volatile B&& b,Args... args)->A}return b.*mfp(std::forward<Args>(args)...);};
       }
+      
+      [[stdcpp::no_odr]] template<typename T> void member_function_accessor(T);
+      
+      template<typename A,class B> decltype(auto) member_function_accessor(A B::* mptr){
+        return [mptr](const B& b) -> A{return b.*mptr;};
+      }
+      template<typename T> void member_function_mutator(T);
+      
+      template<typename A,class B> decltype(auto) member_function_mutator(A B::* mptr){
+        return [mptr](B& b)-> A&{return b.*mptr;};
+      }
     };
     
   };
