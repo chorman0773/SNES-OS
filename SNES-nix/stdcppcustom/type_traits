@@ -270,6 +270,10 @@ namespace std{
       }
     };
     
+    namespace type_intrinsics{
+    
+    };
+    
   };
 
 };
