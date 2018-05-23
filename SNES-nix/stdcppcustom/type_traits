@@ -6,6 +6,8 @@ namespace std{
     using false_type = std::false_type;
     using echo_type = std::echo_type;
     using integral_constant = std::integral_constant;
+    using boolean_constant = std::boolean_constant;
+    using declval = declval;
     template<typename T> struct has_decay_type:
       std::boolean_constant<!std::is_same<t,typename std::decay<T>::type>::value>{};
     template<typename T> struct is_iterable:false_type{};
@@ -269,11 +271,6 @@ namespace std{
         return [mptr](B& b)-> A&{return b.*mptr;};
       }
     };
-    
-    namespace type_intrinsics{
-    
-    };
-    
   };
 
 };
