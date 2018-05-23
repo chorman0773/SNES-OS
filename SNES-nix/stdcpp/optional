@@ -1,0 +1,42 @@
+#ifndef __optional_2018_05_23_16_50
+#define __optional_2018_05_23_16_50
+#include <type_traits>
+namespace std{
+  struct nullopt_t{};
+
+  nullopt_t nullopt;
+
+  typedef<typename T> class optional{
+  private:
+    alignas(alignof(T)) union{ 
+      unsigned char mem[sizeof(T)];
+      T val;
+    }data;
+    bool hasValue = false;
+  public:
+    optional(nullopt_t) noexcept{}
+    optional()noexcept =default;
+    optional(const optional<T>& c){
+      if(c.hasValue){
+        hasValue = true;
+        data = {.val=c.getValue()};
+      }
+    }
+    optional(optional<T>&& o){
+      if(o.hasValue){
+        hasValue = true;
+        data = {.val=std::move(o.getValue()};
+        o.hasValue = false;
+      }
+    }
+    template<typename U> optional(const optional<typename std::conditional<false,decltype(T(declval<U>())),U>::type>& copy){
+      if(c.hasValue){
+        hasValue = true;
+        data = {.val=c.getValue()};
+      }
+    }
+  };
+
+};
+
+#endif
