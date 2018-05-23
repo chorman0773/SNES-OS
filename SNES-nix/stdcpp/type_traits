@@ -703,4 +703,8 @@ namespace std{
   native = little
  };
 };
+#undef __is_trivial
+#undef __enum_underlying_type
+#undef __type_trait
+#undef __inheritence_check
 #endif
