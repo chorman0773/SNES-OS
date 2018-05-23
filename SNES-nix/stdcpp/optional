@@ -1,10 +1,11 @@
 #ifndef __optional_2018_05_23_16_50
 #define __optional_2018_05_23_16_50
 #include <type_traits>
+#include <utility>
 namespace std{
   struct nullopt_t{};
 
-  nullopt_t nullopt;
+  inline constexpr nullopt_t nullopt{};
 
   typedef<typename T> class optional{
   private:
@@ -29,11 +30,21 @@ namespace std{
         o.hasValue = false;
       }
     }
-    template<typename U> optional(const optional<typename std::conditional<false,decltype(T(declval<U>())),U>::type>& copy){
+    explicit template<typename U> optional(const optional<typename std::conditional<false,decltype(T(declval<U>())),U>::type>& c){
       if(c.hasValue){
         hasValue = true;
         data = {.val=c.getValue()};
       }
+    }
+    explicit template<typename U> optional(optional<typename std::conditional<false,decltype(T(declval<U>())),U>::type>&& o){
+     if(o.hasValue){
+        hasValue = true;
+        data = {.val=std::move(o.getValue()};
+        o.hasValue = false;
+      }
+    }
+    template<typename... Args> optional(typename std::conditional<false,decltype(T(declval<Args>...())),in_place_t>::type t,Args&&... args){
+      data = {.val=T(std::forward<Args>(args)...)};
     }
   };
 
