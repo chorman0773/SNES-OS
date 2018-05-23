@@ -129,6 +129,7 @@ void boot(unsigned short snesBiosVersion, unsigned short mmuCoreVersion,int boot
       os.threads = calloc(sizeof(struct _thread),2);
       processes[0] = os;
       initDevfs(devs,devSources,devSinks);
+    
       stop();
 }
 
