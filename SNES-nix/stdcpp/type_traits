@@ -3,6 +3,11 @@
 #include <cstdlib>
 #include <utility>
 #include <type_info>
+
+#pragma macros import("__enum_underlying_type",type) define("__enum_underlying_type",type)
+#pragma macros import("__is_trivial",expn) define("__is_trivial",expn)
+#pragma macros import("__type_trait",type,trait) define("__type_trait",type,trait)
+#pramga macros import("__inheritence_check",type,trait) define("__inheritence_check",type,trait)
 namespace std{
 
   [[stdcpp::optimization_candidate,no_odr_use]] template<typename T> T&& declval();
@@ -17,12 +22,13 @@ namespace std{
   namespace helper_types{
     template<typename T,T val> struct integral_constant{
       constexpr static T value = val;
-      inline operator T(){
+      constexpr operator T(){
         return value;
       }
-      inline T operator()(){
+      constexpr T operator()(){
         return value;
       }
+      constexpr integral_constant(){}
     };
     
     template<bool b> struct boolean_constant:integral_constant<bool,b>{};
@@ -135,12 +141,13 @@ namespace std{
 
     
     template<typename T> struct underlying_type;
-    //Uses compiler level overloads
+    template<typename T> struct underlying_type<typename std::conditional<false,__enum_underlying_type(T),T>::type>:echo_type<__enum_underlying_type(T)>{};
+   
 
     template<typename T> struct is_enum:false_type{};
 
     //SFINAE Implementation of is_enum
-    template<typename T> struct is_enum<typename enable_if<is_same<void_t<underlying_type<T>>,void_t<>>::value,T>::type>:true_type{};
+    template<typename T> struct is_enum<typename enable_if<is_same<void_t<typename underlying_type<T>::type>,void_t<>>::value,T>::type>:true_type{};
 
     //Uses compiler level overloads
     template<typename T> struct is_class:false_type{};
@@ -241,24 +248,27 @@ namespace std{
    template<typename T> struct is_trivialialy_copyable:false_type{};
    //SFINAE overload for is_scalar 
    template<typename T> struct is_trivially_copyable<typename enable_if<is_scalar<T>::value,T>::type>: true_type{};
-   //Class Overloads are compiler assisted
+   
+   template<typename T> struct is_trivially_copyable<typename enable_if<__is_trivial(declval<T&>()=declval<const T&>())||
+        __is_trivial(T(declval<const T&>())),T>::type>:true_type{};
    
    template<typename T struct is_trivial:false_type{};
    
    //SFINAE overload for is_scalar
    template<typename T> struct is_trivial<typename enable_if<is_scalar<T>:value,T>::type>:true_type{};
-   //Class Overloads are compiler assisted
+   
+   template<typename T> struct is_trivial<typename enable_if<__type_trait(T,trivial),T>::type>:true_type{};
    
    template<typename T> struct is_standard_layout:true_type{};
-   //Class Overloads are compiler assisted
+   
+   template<typename T> struct is_standard_layout<typename enable_if<__inheritence_check(T,standard_layout),T>::type>:true_type{};
    
    [[deprecated("POD is Deprecated as of C++20")]] template<typename T> struct is_pod:false_type{};
     template<typename T> are_all_members_pod:false_type{};
     //Overloads are compiler assisted
    [[deprecated("POD is Deprecated as of C++20")]] template<typename T> struct is_pod<typename enable_if<is_scalar<T>::value,T>::type>:true_type{};
    
-   [[deprecated("POD is Deprecated as of C++20")]] template<typename T> struct is_pod<typename enable_if<_hidden::are_all_members_pod<T>::value&&
-      is_trivial<T>::value&&is_standard_layout<T>::value,T>::type>:true_type{};
+   [[deprecated("POD is Deprecated as of C++20")]] template<typename T> struct is_pod<typename enable_if<__type_trait(T,pod),T>::type>:true_type{};
    
    [[deprecated("LiteralType is Deprecated as of C++17")]] template<typename T> struct is_literal_type:false_type{};
    
@@ -276,14 +286,12 @@ namespace std{
    template<typename T> struct has_unique_object_representation:false_type{};
    
    template<typename T> struct has_unique_object_representation<typename enable_if<is_scalar<T>::value,T>::type>:true_type{};
-   //Class Overloads are Compiler Assisted
+   
+   template<typename T> struct has_unique_object_representation<typename enable_if<__type_trait(T,unique_representation),T>::type>:true_type{};
    
    template<typename T> struct is_empty:false_type{};
    
-   template<typename T> struct is_empty_helper:T{
-    char ignored;
-   };
-   template<typename T> struct is_empty<typename enable_if<is_class<T>::value&&(sizeof(is_empty_helper<T>)==1),T>::type>:true_type{};
+   template<typename T> struct is_empty<typename enable_if<__type_trait(T,empty),T>::type>:true_type{};
    
    template<typename T> constexpr bool is_polymorphic_helper(){
     typeid(*decltype<T*>());
@@ -299,35 +307,24 @@ namespace std{
    
    //Class Overloads are Compiler assisted
    
-   template<typename T> struct is_abstract_helper{
-    static inline T val;
-   };
+   
    
    template<typename T> struct is_abstract:false_type{};
    
-   template<typename T> struct is_abstract_helper_mf:true_type{};
    
-   template<typename T> struct is_abstract_helper_mf<typename enable_if<is_class<T>::value,
-      typename conditional<false,void_t<is_abstract_helper<T>>,T>::type>::type>:false_type{};
-   
-   template<typename T> struct is_abstract<typename enable_if<is_class<T>::value&&is_polymorphic<T>::value
-      &&is_abstract_helper_mf<T>::value,T>::type>:true_type{};
-      
-   template<typename T> struct is_final_helper:T{};
+   template<typename T> struct is_abstract<typename enable_if<__type_trait(T,abstract),T>::type>:true_type{};
+    
    
    template<typename T> struct is_final:false_type{};
    
-   template<typename T> struct is_final<typename conditional<!is_class<T>::value,void_t<is_final_helper<T>>,T>::type>:false_type{};
+   template<typename T> struct is_final<typename enable_if<__type_trait(T,final),T>::type>:true_type{};
    
-   template<typename T> struct is_final<typename enable_if<is_class<T>::value,T>::type>:true_type{};
-   //Generate Compiler Assisted Overloads for final unions.
-   
-   template<typename T> struct is_empty<typename enable_if<is_final<T>::value,T>::type>:false_type{};
-   //Since I can't check if a final type is empty, leave it up to the compiler
    
    template<typename T> struct is_aggregate:false_type{};
    
    template<typename T> struct is_aggregate<typename enable_if<is_array<T>::value,T>::type>:true_type{};
+   
+   template<typename T> struct is_aggregate<typename enable_if<__type_trait(T,aggregate),T>::type>:true_type{};
    
    template<typename T> struct is_signed:false_type{};
    
@@ -587,10 +584,11 @@ namespace std{
   
   template<class T,class... Args> struct is_noexcept_constructible<typename enable_if<!is_constructible<T,Args>::value,T>::type,T>::type,Args>:false_type{};
   
-  template<class T,class... Args> struct is_noexcept_constructible<typename enable_if<noexcept(T(Args...)),T>::type>:true_type{};
+  template<class T,class... Args> struct is_noexcept_constructible<typename enable_if<noexcept(T(declval<Args>()...)),T>::type>:true_type{};
   
   template<class T,class... Args> struct is_trivially_constructible:false_type{};
-  //Overloads are compiler assisted
+  
+  template<class T,class... Args> struct is_trivially_constructible<typename enable_if<__is_trivial(T(declval<Args>()...)),T>::type>:true_type{};
   
   template<class T> struct is_default_constructible:is_constructible<T>{};
   
@@ -621,7 +619,8 @@ namespace std{
   template<class T,class U> struct is_noexcept_assignable<typename enable_if<noexcept(declval<T>().operator=(declval<U>())),T>::type,U>:true_type{};
   
   template<class T,class U> struct is_trivially_assignable:false_type{};
-  //Overloads are compiler assisted
+  
+  template<class T,class U> struct is_trivially_assignable<typename enable_if<__is_trivial(declval<T>().operator=(declval<U>()))),T>::type,U>:true_type{};
   
   template<class T> struct is_copy_assignable:is_assignable<T,const T&>{};
   
@@ -643,12 +642,11 @@ namespace std{
   
   template<class T> struct is_noexcept_destructible<typename enable_if<!is_destructible<T>::value,T>::type>:false_type{};
   
-  template<class T> struct is_noexcept_destructible<typename conditional<false,noexcept(declval<T>().~T()),T>::type>::true_type{};
+  template<class T> struct is_noexcept_destructible<typename enable_if<noexcept(declval<T>().~T()),T>::type>:true_type{};
   
-  template<class T> struct is_trivially_destructible:true_type{};
-  //Overloads are compiler assisted.
-  //Unlike other compiler assisted "is_trivially_<something>" metafunctions, generate Compiler Assisted Specialization to inherit from false_type
-  //If the destructor is non trivial.
+  template<class T> struct is_trivially_destructible:false_type{};
+  
+  template<class T> struct is_trivially_destructible<typename enable_if<__is_trivial(declval<T>().~T()),T>::type>:true_type{};
   
   template<class T> struct has_virtual_destructor:false_type{};
   //Overloads are compiler assisted
@@ -693,7 +691,7 @@ namespace std{
   template<class... Traits> struct disjunction{};
   template<> struct disjunction<>:false_type{};
   template<class First,class... Rest> struct disjunction<typename enable_if<bool(First::value),First>::type,Rest>:true_type{};
-  template<class First,class... Rest> struct disjunction<bool(First::value),First>::type,Rest>:disjunction<Rest>{};
+  template<class First,class... Rest> struct disjunction<typename enable_if<!bool(First::value),First>::type,Rest>:disjunction<Rest>{};
   
   template<class Input> struct negation:conditional<bool(Input::value),true_type,false_type>::type{};
  };
