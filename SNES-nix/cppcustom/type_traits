@@ -15,6 +15,7 @@ namespace std{
     template<typename T> struct is_iterable:false_type{};
     template<typename T,std::size_t Size> struct is_iterable<T[Size]>:true_type{};
     template<typename T,std::size_t Size> struct is_iterable<T(&)[Size]>:true_type{};
+    template<typename T,std::size_t Size> struct is_iterable<T(*)[Size]>:true_type{};
     template<class T> struct is_iterable<typename std::conditional<false,
         typename std::conditional<false,decltype(declval<T>().begin()),decltype(declval<T>().end())>::type,T>::type>:true_type{};
     template<typename T> struct has_attachment : false_type{};
