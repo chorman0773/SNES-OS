@@ -3,9 +3,6 @@
 #pragma once
 #include <iostream>
 #include <string>
-extern "C"{
-#include <conio.h>
-};
 #include <vector>
 
 
@@ -18,8 +15,6 @@ using std::string;
 using std::vector;
 
 /*
-	Pulled Menuing code from one I wrote for Revised Treasure Island for C++
-	I guarentee this code belongs to me.
 	Updated menuing to use std::vector rather than dynamic array (update 2018-02-22)
 */
 class Menu{
