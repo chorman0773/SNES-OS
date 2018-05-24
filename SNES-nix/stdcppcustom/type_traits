@@ -1,5 +1,7 @@
 #include <type_traits>
-
+#pragma macros import("__expression_traits",trait,expn) define("__expression_traits",trait,expn)
+#pragma macros import("__inheritence_traits",trait,type) define("__inheritence_traits",trait,type)
+#pragma macros import("__inherits_from",type) define("__inherits_from",type)
 namespace std{
   namespace custom{
     using true_type = std::true_type;
@@ -248,16 +250,16 @@ namespace std{
         return [mfp](const volatile B& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
       }
       template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)&& mfp){
-        return [mfp](B&& b,Args... args)->A}return b.*mfp(std::forward<Args>(args)...);};
+        return [mfp](B&& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
       }
       template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)&& const mfp){
-        return [mfp](const B&& b,Args... args)->A}return b.*mfp(std::forward<Args>(args)...);};
+        return [mfp](const B&& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
       }
       template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)&& volatile mfp){
-        return [mfp](volatile B&& b,Args... args)->A}return b.*mfp(std::forward<Args>(args)...);};
+        return [mfp](volatile B&& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
       }
       template<typename A,class B,typename... Args> decltype(auto) from_member_function_pointer(A B::*(Args...)&& const volatile mfp){
-        return [mfp](const volatile B&& b,Args... args)->A}return b.*mfp(std::forward<Args>(args)...);};
+        return [mfp](const volatile B&& b,Args... args)->A{return b.*mfp(std::forward<Args>(args)...);};
       }
       
       [[stdcpp::no_odr]] template<typename T> void member_function_accessor(T);
@@ -271,6 +273,17 @@ namespace std{
         return [mptr](B& b)-> A&{return b.*mptr;};
       }
     };
+    namespace polymorphic{
+      template<typename T> struct is_virtually_destructible:false_type{};
+      template<typename T> struct is_virtually_destructible<typename enable_if<__expression_trait(polymorphic,declval<T*>()->~T()),T>::type>:true_type{};
+      template<typename A,typename B> struct is_virtual_base_class:false_type{};
+      template<typename A,typename B> struct is_virtual_base_class<typename enable_if<std::conjunction<std::is_polymorphic<B>,std::is_base_of<A,B>>::value,A>::type,B>:true_type{};
+      template<typename A,typename B> struct is_virtual_base_class<typename enable_if<__inheritence_traits(__inherits_from(virtual B),A),A>::type,B>:true_type{};
+    };
   };
+  
+  #undef __expression_triat
+  #undef __inheritence_trait
+  #undef __inherits_from
 
 };
