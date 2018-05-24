@@ -21,6 +21,9 @@ public:
 	UUID(uint64_t,uint64_t);
 	UUID();
 	UUID(string);
+	UUID(const char*);
+	UUID(const UUID&);
+	UUID(UUID&&);
 	uint64_t getHigh()const;
 	uint64_t getLow()const;
 	int32_t hashCode()const;
