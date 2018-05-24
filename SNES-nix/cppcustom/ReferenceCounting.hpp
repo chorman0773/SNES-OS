@@ -41,6 +41,7 @@ public:
 		return *this;
 	}
 	Shared<T>& operator=(Shared<T>&& c)&{
+		if(refCounter.isOnlyReference()&&value!=nullptr)delete value;
 		value = std::exchange(c.value,nullptr);
 		refCounter = std::move(c.refCounter);
 		return *this;
