@@ -281,6 +281,21 @@ namespace std{
       template<typename A,typename B> struct is_virtual_base_class<typename enable_if<std::conjunction<std::is_polymorphic<B>,std::is_base_of<A,B>>::value,A>::type,B>:true_type{};
       template<typename A,typename B> struct is_virtual_base_class<typename enable_if<__inheritence_traits(__inherits_from(virtual B),A),A>::type,B>:true_type{};
     };
+    namespace nullable{
+      template<typename T> struct is_nullable:false_type{};
+      template<> struct is_nullable<nullptr_t>:true_type{};
+      template<typename T> struct is_nullable<T*>:true_type{};
+      template<typename T> struct is_nullable<T*const>:true_type{};
+      template<typename T> struct is_nullable<T*volatile>:true_type{};
+      template<typename T> struct is_nullable<T*const volatile>:true_type{};
+      template<typename Ret,typename... Args> struct is_nullable<Ret(*)(Args...)>:true_type{};
+      template<typename T> struct is_nullable<T(*)[]>:true_type{};
+      template<typename T,size_T N> struct is_nullable<T(*)[N]>:true_type{};
+      template<typename T> struct is_nullable<typename conditional<false,decltype(declval<typename std::remove_const<T>&>()=nullptr),T>::type>:true_type{};
+      template<typename T> struct is_nullable<typename enable_if<std::is_constructible<T,decltype(nullptr)>::value,T>::type>:true_type{};
+      template<typename T> struct is_nullable<T&>:is_nullable<T>{};
+      template<typename T> struct is_nullable<T&&>:is_nullable<T>{};
+    };
   };
   
   #undef __expression_triat
