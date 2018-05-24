@@ -276,5 +276,26 @@ public:
 	}
 };
 
-
-
+class Finalizeable{
+private:
+    RefCounting counter;
+protected:
+    virtual void finalize();
+public:
+    virtual ~Finalizeable();
+    Finalizeable& operator=(const Finalizeable&)&;
+    Finalizeable& operator=(Finalizeable&&)&;
+};
+#pragma macros import("__get_base_types",type) define("__get_base_types",type)
+#pragma macros import("__get_object_field_types",type) define("__get_object_field_types",type)
+namespace type_traits{
+    using std::declval;
+    using std::true_type;
+    using std::false_type;
+    template<typename T> struct is_shared:false_type{};
+    template<typename T> struct is_shared<std::shared_ptr<T>>:true_type{};
+    template<typename T> struct is_shared<Shared<T>>:true_type{};
+    template<typename T> struct is_shared<Finalizeable>:true_type{};//Finalizeable is explicitly specialized (even though it doesn't matter)
+    template<> struct is_shared<RefCounting>:true_type{};
+    template<typename T> struct is_shared<typename std::enable_if<std::conjunction<is_shared<__get_base_types(T)>...,is_shared<__get_field_types(T)>...>::value,T>::type>:true_type{};
+};
