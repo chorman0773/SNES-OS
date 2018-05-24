@@ -14,15 +14,16 @@
 #undef major
 #undef minor
 
+#include <type_traits>
+
 using std::string;
 using std::istream;
 using std::ostream;
 
-enum predefined{
-	minimum, current, currOrigin
-};
 
-template<predefined target> struct VersionConstants{};
+
+
+
 
 /*
  * Represents a version of the code.
@@ -42,7 +43,7 @@ public:
 	 * Constructs an unknown (null) version.
 	 * The default Version produced is 1.0
 	 */
-	Version();
+	constexpr Version():major(1),minor(0){}
 	/*
 	 * Obtains a version given in an encoded form (Ex. 0x0000).
 	 * This follows the sentry format for encoding versions (2-bytes BE, High-byte is Major version -1, Low-byte is minor version)
@@ -58,28 +59,23 @@ public:
 	 * Obtains a version based on a given Major and minor version.
 	 * Major must be between 1 and 256 and minor must be between 0 and 255
 	 */
-	Version(int,int);
+	constexpr Version(int maj,int min):major((maj-1)&0xff+1),minor(min&0xff){}
+    
+    constexpr Version(const Version&)=default;
+    constexpr Version(Version&&)=default;
 	
-	/*
-	* Obtains the Minimum Supported Version.
-	*/
-	Version(VersionConstants<minimum>);
-	/*
-	* Obtains the Current running Version.
-	*/
-	Version(VersionConstants<current>);
-	/*
-	* Obtains the Origin of the current Version.
-	*/
-	Version(VersionConstants<currOrigin>);
 	/*
 	 * Gets the major version, ranging from 1 to 256
 	 */
-	int getMajor()const;
+	constexpr int getMajor()const{
+     return major;   
+    }
 	/*
 	 * Gets the minor version, ranging from 0 to 255
 	 */
-	int getMinor()const;
+	constexpr int getMinor()const{
+     return minor;   
+    }
 	/*
 	 * Returns the version in encoded form.
 	 * The resultant value is 2-bytes consisting of major-1<<8|minor.
@@ -89,7 +85,9 @@ public:
 	 * Obtains the Origin of this Version. The origin of a Version is equal to the Version
 	 * that has the same Major version, but a minor version of 0.
 	 */
-	Version getOrigin()const;
+	constexpr Version getOrigin()const{
+     return Version(major,0);   
+    }
 	/*
 	 * Returns this Version as a string.
 	 * The Resultant String is in the form <major>.<minor>
@@ -104,25 +102,38 @@ public:
 	 * Compares this version with annother. A Version is the same if its Major version and
 	 * Minor version are exactly the same
 	 */
-	bool operator==(const Version&)const;
+	constexpr bool operator==(const Version& v)const{
+        return v.major==major&&v.minor==minor;
+    }
 	/*
 	 * Compares this version with another. A Version is less-than another if its major version is less
 	 * than the other version's major version, or they share the same origin, and the first has a lower minor version
 	 */
-	bool operator<(const Version&)const;
+	constexpr bool operator<(const Version& v)const{
+        return major<v.major||(major==v.major&&minor<v.minor);
+    }
 	/*
 	 * Compares this version with another. A Version is Greater-than another if its major version is greater than
 	 * the other versions' major version, or they share the same origin, and the first version has a greater minor version
 	 */
-	bool operator>(const Version&)const;
+	constexpr bool operator>(const Version& v)const{
+        return major>v.major||(major==v.major&&minor>v.minor);
+    }
 	/*
 	 * Compound Comparison <=
 	 */
-	bool operator<=(const Version&)const;
+	constexpr bool operator<=(const Version& v)const{
+     return major <=v.major||(major==v.major&&minor<=v.minor);   
+    }
 	/*
 	 * Compound Comparison >=
 	 */
-	bool operator>=(const Version&)const;
+	constexpr bool operator>=(const Version& v)const{
+        return major>=v.major||(major==v.major&&minor>=v.minor);
+    }
+    constexpr bool operator!=(const Version& v)const{
+        return major!=v.major||minor!=v.minor;
+    }
 };
 
 /*
@@ -140,9 +151,78 @@ istream& operator>>(istream&,Version&);
  */
 ostream& operator<<(ostream&,const Version&);
 
-typedef VersionConstants<current> CurrentVersion;
-typedef VersionConstants<minimum> MinimumVersion;
-typedef VersionConstants<currOrigin> CurrentOrigin;
 
+template<typename verconst> struct VersionConstants{
+public:
+    static const constexpr bool isValid = false;
+    VersionConstants()=delete;
+    VersionConstants(const VersionConstants<verconst>&)=delete;
+    VersionConstants(VersionConstants<verconst>&&)=delete;
+    VersionConstants& operator=(const VersionConstants<verconst>&)=delete;
+    VersionConstants& operator=(Version<verconst>&&)=delete;
+};
+template<typename verconst> struct VersionConstants<typename std::conditional<false,std::void_t<decltype(verconst::major),decltype(verconst::minor),verconst>::type>{
+public:
+   static const constexpr bool isValid = true;
+   constexpr VersionConstants()=default;
+   constexpr VersionConstants(const VersionConstants<verconst>&)=default;
+   constexpr VersionConstants(VersionConstants<verconst>&&)=default;
+   constexpr VersionConstants<verconst>& operator=(const VersionConstants<verconst>&)=default;
+   constexpr VersionConstants<verconst>& operator=(VersionConstants<verconst>&&)=default;
+   constexpr operator Version()const{
+    return Version(verconst::major,verconst::minor);   
+   }
+   constexpr Version operator()()const{
+    return Version(verconst::major,verconst::minor);   
+   }
+   constexpr bool operator==(const Version& v)const{
+       return verconst::major==v.getMajor()&&verconst::minor==v.getMinor();
+   }
+   constexpr bool operator!=(const Version& v)const{
+       return verconst::major!=v.getMajor()||verconst::minor!=v.getMinor();
+   }
+   constexpr bool operator< (const Version& v)const{
+       return verconst::major<v.getMajor()||(verconst::major==v.getMajor()&&verconst::minor<v.getMinor());
+   }
+   constexpr bool operator> (const Version& v)const{
+       return verconst::major>v.getMajor()||(verconst::major==v.getMajor()&&verconst::minor>v.getMajor());
+   }
+   constexpr bool operator<=(const Version& v)const{
+      return verconst::major<v.getMajor()||(verconst::major==v.getMajor()&&verconst::minor<=v.getMinor());
+   }
+   constexpr bool operator>=(const Version& v)const{
+      return verconst::major>v.getMajor()||(verconst::major==v.getMajor()&&verconst::minor>=v.getMinor());
+   }
+};
+template<typename verconst> using ValidVersionConstant = typename std::enable_if<VersionConstant<verconst>::isValid,const VersionConstant<verconst>>;
+template<typename verconst> constexpr bool operator==(const Version& v,ValidVersionConstant<verconst> c){
+    return c==v;
+}
+template<typename verconst> constexpr bool operator!=(const Version& v,ValidVersionConstant<verconst> c){
+ return c!=v;   
+}
+template<typename verconst> constexpr bool operator< (const Version& v,ValidVersionConstant<verconst> c){
+ return c>v;   
+}
+template<typename verconst> constexpr bool operator> (const Version& v,ValidVersionConstant<verconst> c){
+ return c<v;   
+}
+template<typename verconst> constexpr bool operator<=(const Version& v,ValidVersionConstant<verconst> c){
+ return c>=v;   
+}
+template<typename verconst> constexpr bool operator>=(const Version& v,ValidVersionConstant<verconst> c){
+ return c<=v;   
+}
+namespace snesos{
+    struct current{
+        constexpr int major = 1;
+        constexpr int minor = 0;
+    };
+        constexpr int major = 1;
+        constexpr int minor = 0;
+    };
+    const constexpr VersionConstants<current> CurrentVersion{};
+    const constexpr VersionConstants<origin> CurrentOrigin{};
+};
 
 #endif /* __VERSION_HPP__18_04_04_11_12_42 */
