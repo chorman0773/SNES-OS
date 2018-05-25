@@ -7,7 +7,7 @@ If the parameter is bool, use true if the value is true, and false if the value 
 If the parameter is int, long, long long, char, short, or any unsigned version of the above, use the literal integer.
 If the parameter is string& or char*, then use the literal string (without "")
 If the template parameter is a typename or class, use the symbol name of the reduced type.
-If there is more than one template parameter, separate each with a ;
+If there is more than one template parameter, separate each with a ,
 
 
 Append @ If the method has parameters (asside from void)
@@ -15,9 +15,10 @@ Parameter Info is generated using the Symbol Name of the reduced type of each pa
 
 The Symbol name of a type is given by the following psuedocode, for each level starting at the highest level
 At each level of the type, if that level includes const, append ^.
+If that level includes volatile, append !. (order interchangeable with const).
 At each level of the type, if that level describes a reference, append &.
 At each level of the type, if that level describes a pointer, appends *.
-At each level of the type, if that level describes an r-value reference, apppend $.
+At each level of the type, if that level describes an r-value reference, apppend %.
 At each level of the type, if that level describes an array, append [, followed by size, followed by ].
 If the current level of the type, if the level is the base type, Append the Type Descriptor of the base type
 
@@ -32,12 +33,15 @@ int -> I
 long -> j
 long long -> J
 float -> F
-double -> D
+double -> d
+long double -> D
 unsigned (int) -> U
 unsigned char -> B
 unsigned short -> A
 unsigned long -> o
 unsigned long long -> O
+decltype(nullptr) -> N
+
 
 Class types:
 Append L
@@ -49,9 +53,17 @@ void exit(int)
 gives exit@I
 and template<size_t size> copyTo(array<int,size>&)const, defined in class Array
 For Template parameter 50
-Gives Array::copyTo<50>@&^*^LArray;Lstd::array<I;50>;
+Gives Array::copyTo<50>@^*^LArray;&Lstd::array<I,50>;
 
 
 
+If the Method is has the r-value reference qualifier (member function), prepend %$ to the type descriptor, if has the l-value reference qualifier, prepend &$ to the type descriptor.
 
+
+In the class Smart
+Smart&& operator&()&
+Smart& operator*()&&
+
+gives Smart::operator&@&$^*LSmart;
+and Smart::operator*@%$^*LSmart;
 
