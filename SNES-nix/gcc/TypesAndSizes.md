@@ -45,7 +45,7 @@
   </tr>
   <tr>
     <td>void*</td>
-    <td>I</td>
+    <td>*V</td>
     <td>*V</td>
     <td>4</td>
     <td>long address</td>
