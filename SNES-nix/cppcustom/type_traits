@@ -1,8 +1,19 @@
 #include <type_traits>
+#include <optional>
+#include <variant>
+#include <pair>
+#include <tuple>
+#include <array>
+#include <initializer_list>
+#include <complex>
+#include <bitset>
 #pragma macros import("__expression_traits",trait,expn) define("__expression_traits",trait,expn)
+#pragma macros import("__type_traits",type,trait) define("__type_traits",type,trait)
 #pragma macros import("__inheritence_traits",trait,type) define("__inheritence_traits",trait,type)
 #pragma macros import("__inherits_from",type) define("__inherits_from",type)
+#pragma macros import("__somewhere",param) define("__somewhere",param)
 namespace std{
+  
   namespace custom{
     using true_type = std::true_type;
     using false_type = std::false_type;
@@ -274,6 +285,19 @@ namespace std{
         return [mptr](B& b)-> A&{return b.*mptr;};
       }
     };
+    
+    
+    template<typename T> struct is_incomplete:false_type{};
+    template<typename T> struct is_incomplete<T[]>:true_type{};
+    template<typename T,size_t N> struct is_incomplete<T[N]>:is_incomplete<T>{};
+    template<> struct is_incomplete<void>:true_type{};
+    template<typename T> struct is_incomplete<const T>:is_incomplete<T>{};
+    template<typename T> struct is_incomplete<volatile T>:is_incomplete<T>{};
+    template<typename T> struct is_incomplete<const volatile T>:is_incomplete<T>{};
+    template<typename T> struct is_incomplete<typename std::enable_if<!__type_trait(T,defined),T>::type>:true_type{};
+    
+    
+    
     namespace polymorphic{
       template<typename T> struct is_virtually_destructible:false_type{};
       template<typename T> struct is_virtually_destructible<typename enable_if<__expression_trait(polymorphic,declval<T*>()->~T()),T>::type>:true_type{};
@@ -295,6 +319,24 @@ namespace std{
       template<typename T> struct is_nullable<typename enable_if<std::is_constructible<T,decltype(nullptr)>::value,T>::type>:true_type{};
       template<typename T> struct is_nullable<T&>:is_nullable<T>{};
       template<typename T> struct is_nullable<T&&>:is_nullable<T>{};
+    };
+    namespace storage{
+      template<typename T,typename C> struct can_contain_object:false_type{};
+      template<typename T> struct can_contain_object<T,T>:true_type{};
+      template<typename T> struct can_contain_object<T,std::optional<T>>:true_type{};
+      template<typename T,size_t N> struct can_contain_object<T,T[N]>:true_type{};
+      template<typename T,size_T N> struct can_contain_object<T,std::array<T,N>>:true_type{};
+      template<typename T> struct can_contain_object<T,std::initialzier_list<T>>:true_type{};
+      template<typename T,typename A> struct can_contain_object<T,std::pair<T,A>>:true_type{};
+      template<typename T,typename A> struct can_contain_object<T,std::pair<A,T>>:true_type{};
+      template<typename T> struct can_contain_object<T,std::variant<__somewhere(T)>>:true_type{};
+      template<typename T> struct can_contain_object<T,std::aligned_union<__somewhere(T)>>:true_type{};
+      template<typename T> struct can_contain_object<T,std::tuple<__somewhere(T)>>:true_type{};
+      template<typename T> struct can_contain_object<T,std::complex<T>>:true_type{};
+      template<typename T> struct can_contain_object<T,T _Complex>>:true_type{};
+      template<typename T> struct can_contain_object<T _Imaginary,std::complex<T>>:true_type{};
+      template<typename T> struct can_contain_object<T _Imaginary,T _Complex>>:true_type{};
+      template<size_t N> struct can_contain_object<bool,std::bitset<N>>:true_type{};
     };
   };
   
