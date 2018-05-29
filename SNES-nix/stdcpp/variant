@@ -1,0 +1,34 @@
+#ifndef __variant_2018_05_29_14_28
+#define __variant_2018_05_29_14_28
+#include <type_traits>
+#pragma macros import("__somewhere",expn) define("__somewhere",expn)
+namespace std{
+  namespace detail{
+    struct no_type{};
+    template<typename T> struct echo_type{
+      using type = T;
+    };
+  };
+  struct monostate{};
+  
+  template<typename... Types> class variant{
+  public:
+    static const constexpr size_t variant_npos = -1;
+  private:
+    aligned_union<Types...> underlying;
+    size_t target;
+    template<typename T> T& getForType(typename std::enable_if<std::is_same<variant<Types...>,variant<__somewhere(T)>::value,bool>::type=true){
+      
+    }
+  };
+  
+  template<size_t I,class T> struct variant_alternative;
+  template<size_t I,typename First,typename... Types> struct variant_alternative<I,variant<First,Types...>>:variant_alternative<I-1,variant<Types...>>{};
+  template<size_t I,typename First> struct variant_alternative<I,variant<First>>{};
+  
+  template<typename First> struct variant_alternative<0<variant<First>>:echo_type<First>{};
+  template<typename First,typename... Types> struct variant_alternative<0,variant<First,Types...>>:echo_type<First>{};
+  
+};
+#undef __somewhere
+#endif
