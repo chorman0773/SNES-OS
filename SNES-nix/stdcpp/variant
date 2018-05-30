@@ -8,17 +8,42 @@ namespace std{
     template<typename T> struct echo_type{
       using type = T;
     };
+    template<size_t N,typename T,typename First,typename... Rest> struct variant_position_finder:variant_position_finder<N+1,T,Rest...>{};
+    
+    template<size_t N,typename T,typename... Rest> struct variant_position_finder<N,T,T,Rest...>:integral_constant<size_t,N>{};
+    template<size_t N,typename T> struct variant_position_finder<N,T,T>:integral_constant<size_t,N>{};
+    
+    template<size_t N,typename T,typename First> struct variant_position_finder<N,T,First>:integral_constant<size_t,-1>{};
+    
+    template<typename T,typename... Types> const constexpr size_t variant_position = variant_position<0,T,Types>::value;
+    
   };
   struct monostate{};
   
   template<typename... Types> class variant{
   public:
     static const constexpr size_t variant_npos = -1;
+    friend template<class T,class... Types> T& get(variant<Types...>& t);
+    friend template<class T,class... Types> T& get(variant<Types...>& t);
   private:
     aligned_union<Types...> underlying;
     size_t target;
-    template<typename T> T& getForType(typename std::enable_if<std::is_same<variant<Types...>,variant<__somewhere(T)>::value,bool>::type=true){
-      
+    template<typename T> T& getForType(typename std::enable_if<std::is_same<variant<Types...>,variant<__somewhere(T)>>::value,bool>::type=true)&{
+      return reinterpret_cast<T&>(underlying);
+    }
+    template<typename T> const T& getForType(typename std::enable_if<std::is_same<variant<Types...>,variant<__somewhere(T)>>::value,bool>::type=true)const&{
+      return reinterpret_cast<T&>(underlying);
+    }
+    template<typename T> T&& getForType(typename std::enable_if<std::is_same<variant<Types...>,variant<__somewhere(T)>>::value,bool>::type=true)&&{
+      return reinterpret_cast<T&&>(underlying);
+    }
+    
+    template<typename T> const T&& getForType(typename std::enable_if<std::is_same<variant<Types...>,variant<__somewhere(T)>>::value,bool>::type=true)const&&{
+      return reinterpret_cast<T&>(underlying);
+    }
+    
+    template<typename T> constexpr bool checkType(typename std::enable_if<std::is_same<variant<Types...>,variant<__somewhere(T)>>::value,bool>::type=true)const{
+      return target==detail::variant_position<T,Types...>;
     }
   };
   
