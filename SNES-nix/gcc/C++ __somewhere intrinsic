@@ -1,0 +1,38 @@
+__somewhere is a intrinsic of the SNES-OS C++ compiler's intrinsic macro pool.
+__somewhere takes one macro parameter, and expands to some valid variadic array,
+which when passed to a type with a variadic template parameter, provides special 
+templating functionality. This, the __nowhere intrinsic, and the __everywhere intrinsic
+allow you to form specialized template expressions. __nowhere and __everywhere intrinsics are similar to __somewhere, and therefore have the same rules, though expansion differs.
+
+These intrinsics allow you to use hard comparisons (such as std::is_same), to provide matching semantics due to how the intrinsics expand. 
+
+When __somewhere is used in the definition of an explicit template specialization, that specialization is always a partial specialization, even if it would otherwise be a full specialization (same with __everywhere and __nowhere).
+
+__somewhere is only valid where a variadic template paramater is expected, and
+the template type of the expression must match the template type of the expected parameter.
+In addition, use of __somewhere when the type of the parameter does not satisfy TemplateParameterType, or the expression of __somewhere is not a constant expression, the program is ill-formed.
+
+When __somewhere expands, it forms a template expression which is valid for the context,
+that has the argument expression resolved and passed as the template. If the expression is a constexpr function or variable, its use in __somewhere is not odr-use.
+
+When __somewhere expands within a type's template paramater array, that type is the same as every type with the same base type, and arguments that are not using __somewhere, reguardless of the arguments covered with __somewhere, as long as at least one of those arguments is the value of the resolved expression. For example, with the parameter pack typename... Args std::is_same_t<tuple<Args...>,tuple<__somewhere(std::string)>> is true if one of types in Args is the same type as std::string. In this case, this forms a matching metafunction that checks that std::string is included somewhere in Args.
+In addition, multiple uses of __somewhere can appear (in any placement), and if they are for the same varargs parameter, resolve to a single __somewhere expression, which matches both arguments.
+
+__somewhere can be used in the specialization of a template, either directly or indirectly, to match certain parameter packs. 
+
+The type tuple<__somewhere(T)> is the type which is the same as tuple<T>, tuple<U,__somewhere(T)>, and tuple<__somewhere(T),U>, for some types U and T. In addition, because non wrapped parameters are preserved, tuple<S,_somewhere(T)> is the type which is the same as tuple<S,T>, tuple<S,U,__somewhere(T)>, and tuple<U,__somewhere(T),U> for some types S, T, and U. This is not exclusive to tuple, or typename parameter packs, and similar rules apply to any variadic template.
+
+__nowhere is similar to __somewhere, except that types using it compare the same (under the same conditions) to every instance of the template type which does not contain the value of the expresion. For example, with the parameter pack typename... Args,
+std::is_same_t<tuple<Args...>,tuple<__nowhere(void*)>> is true if none of the types in Args are the same as void*. In this case, this  forms a matching metafunction that checks that void* is not included anywhere in Args.
+
+The type tuple<__nowhere(T)> is the type which is the same as tuple<>, tuple<U>, tuple<U,__nowhere(T)>, and tuple<__nowhere(T),U>, for some type T and U, where T is not the same as U. Note that __nowhere can in fact expand to nothing, therefore tuple<U> is the same as tuple<U,__nowhere(T)>, and tuple<__nowhere(T),U> for some types T and U, even if T is the same as U.
+
+
+__everywhere is also similar to __somewhere, except that it only matchs a type if that types template paramaters ONLY contain the value of the expression, except where specific expressions appear (and after or before, unless another __everywhere appears). Unlike __somewhere and __nowhere, __everywhere does not combine with other __everywhere's (but still combine with __somewhere and __nowhere). 
+Everywhere expands to an expression, which when given to a variadic template parameter, creates a type which for the expression e, matches all types with the same expression and every expansion of all e,...,e[n times], for some integer n>0. For example std::is_same_t<std::tuple<Args...>,std::tuple<__everywhere(char*)>> is true if Args is empty, or every type in Args is the same as char*.
+
+The type tuple<__everywhere(T)> is the type which is the same as tuple<>, tuple<T>, tuple<T,__everywhere(T)>, and tuple<__everywhere(T),T>, for some type T. Similarly to __nowhere, __everywhere can match an empty parameter pack.
+
+
+
+
