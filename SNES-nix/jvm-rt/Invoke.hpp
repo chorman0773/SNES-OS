@@ -20,7 +20,8 @@ namespace java{
 	enum class StackValueType{
 		INT, FLOAT, REFERENCE, 
 		LONG, DOUBLE, TOP,
-		RETURNADDRESS, INVALID
+		RETURNADDRESS, INVALID,
+		NULL_TYPE
 	}uint8_t;
     
     enum class InvocationType;
@@ -155,6 +156,7 @@ namespace java{
 		bool canReplace(initializer_list<VerificationValue>&,initializer_list<VerificationValue>&);
 		bool canSetLocal(int,VerificationValue&);
 		bool canGetLocal(int,VerificationValue&);
+		VerificationValue& getLocalType(int);
 		bool canLoad(int,VerificationValue&);
 		bool canStore(int,VerificationValue&);
 		bool canReturn(VerificationValue&);
