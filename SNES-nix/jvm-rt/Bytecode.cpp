@@ -1,6 +1,7 @@
 #include "Invoke.hpp"
 #include "ClassFile.hpp"
 #include "Types.hpp"
+#include "Objects.hpp"
 
 int32_t signExtend(int8_t val){
   return (int32_t)(((((uint64_t)((uint8_t)val))>>7)<<32)-1)|val;
@@ -86,28 +87,44 @@ namespace java{
 	class FConstInstruction final:public Instruction{
 		float val;
 	public:
-		FConstInstruction(float);
-		void apply(Invocation&);
-		bool validate(ValidationState&);
+		FConstInstruction(float val):val(val){}
+		void apply(Invocation& i){
+			i.pushFloat(val);	
+		}
+		bool validate(ValidationState& v){
+			return v.canPush({F});	
+		}
 	};
 	class LConstInstruction final:public Instruction{
-		long val;
+		long long val;
 	public:
-		LConstInstruction(long);
-		void apply(Invocation&);
-		bool validate(ValidationState&);
+		LConstInstruction(long long val):val(val){}
+		void apply(Invocation& i){
+			i.pushLong(val);
+		}
+		bool validate(ValidationState& v){
+			return v.canPush({L});	
+		}
 	};
 	class DConstInstruction final:public Instruction{
 		double val;
 	public:
-		DConstInstruction(double);
-		void apply(Invocation&);
-		bool validate(ValidationState&);
+		DConstInstruction(double val):val(val){}
+		void apply(Invocation& i){
+			i.pushDouble(val);	
+		}
+		bool validate(ValidationState& v){
+			return v.canPush({D});	
+		}
 	};
 	class AConstNullInstruction final:public Instruction{
 	public:
-		void apply(Invocation&);
-		bool validate(ValidationState&);
+		void apply(Invocation& i){
+			i.pushReference(null);	
+		}
+		bool validate(ValidationState& v){
+			return v.canPush({nulltype});	
+		}
 	};
 
 	class ToSmallPrimitiveInstruction final:public Instruction{
@@ -158,8 +175,12 @@ namespace java{
 		int n;
 	public:
 		LoadValue_n(StackValueType,int);
-		void apply(Invocation&);
-		bool validate(ValidationState&);
+		void apply(Invocation& i){
+			
+		}
+		bool validate(ValidationState& v){
+			
+		}
 	};
 	class ArrayLoadValue final:public Instruction{
 		StackValueType target;
