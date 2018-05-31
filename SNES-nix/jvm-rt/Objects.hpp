@@ -5,6 +5,7 @@
 using std::string;
 namespace java{
   class Class;
+  class ReferenceType;
   namespace Objects{
     ReferencePtr newInstance(const Class&);
     bool instanceof(const ReferencePtr&,const Class&);
