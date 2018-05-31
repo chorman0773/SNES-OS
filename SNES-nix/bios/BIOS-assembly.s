@@ -1,4 +1,5 @@
-
+.no-elf-header ;When all linkages are satisfied the Binary generator will generate this as a raw SNES ROM. (without the normal header)
+		;IE something that can be burned onto an EPROM... 
 .alias sr    $70:0024
 .alias push  $70:002C
 .alias pop   $70:002D
@@ -9,6 +10,10 @@
 .extern hblank
 .extern nmiRoutine
 
+.section primary_header $01:0000 r ;Address unimportant, but sections have to have a position header
+.db 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+.db 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+	;SHA-256 Hash of everything thats the headers.
 .section bios_header $01:2000 r
 .db "SNES-OS BIOS" ;Name of the system
 .db "Connor Horman" ;Name of the Author
@@ -16,7 +21,7 @@
 .db 0x00 0x00 ;Version Code, "1.0"
 
 
-.section header $00:ffc0 r
+.section header $00:ffc0 r ;Everything that will actually get mapped into memory is going to be placed at the correct address in the ASM file.
 .db "SNES-OS BIOS" 
 .db 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
 .db 0x31 0x00 0x00 0x00
