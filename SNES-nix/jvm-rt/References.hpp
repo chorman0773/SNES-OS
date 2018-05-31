@@ -17,60 +17,23 @@ namespace java{
         Handle(ReferenceType&,int);
         ~Handle();
     };
+    using ReferencePtr = weak_pointer<Handle>;
     
-    enum class ReferenceKind{
-      STRONG, SOFT, WEEK  
-    };
-
-    struct Reference{
-        const virtual Handle* getHandle()const = 0;
-        virtual bool isStrong()const=0;
-        virtual ReferenceKind getType()const=0;
-        virtual ~Reference();
-    };
-    struct WeakReference final:public Reference{
-        weak_ptr<Handle> ref;
-        WeakReference(shared_ptr<Handle>&);
-        const Handle* getHandle()const;
-        bool isReclaimed()const;
-        ReferenceKind getType()const;
-    };
-    struct SoftReference final:public Reference{
-        shared_ptr<Handle> base;
-        SoftReference(shared_ptr<Handle>&);
-        void freeSoftMemory();
-        const Handle* getHandle()const;
-        bool isReclaimed()const;
-        ReferenceKind getType()const;
-    };
-    struct StrongReference final:public Reference{
-        shared_ptr<Handle> base;
-        StrongReference(ReferenceType&,int);
-        StrongReference(shared_ptr<Handle>&);
-        StrongReference();
-        const Handle* getHandle()const;
-        bool isReclaimable()const;
-        ReferenceKind getType()const;
+    enum class Reachability{
+        UNREACHABLE, PHANTOM, WEEK, SOFT, STRONG
     };
     
-    
-    
-    class ReferencePtr final{
+    class GarbageCollector{
     private:
-        ReferenceType type;
-        Reference* ref;
-        ReferencePtr(Reference*);
+        vector<shared_ptr<Handle>> references;
     public:
-        ReferencePtr(ReferenceType&,int);
-        ~ReferencePtr();
-        Reference& operator*();
-        Reference* operator->();
-        WeakReference& asWeak();
-        SoftReference& asSoft();
-        bool isValidCast(ReferenceType&);
+        GarbageCollector();
+        ReferencePtr constructReference(ReferenceType&,int);
+        Reachability getReachabilityFor(Handle*);
+        void collectGarbage();
+        void finalizeObject(Handle*);
     };
     
-    const ReferencePtr null(nullptr);
 };
 
 #endif
