@@ -1,7 +1,5 @@
 #include <devices.h>
 
-#include <os/sysio.h>
-#include <bios/BIOS-time.h>
 #include <openssl/AES.h>
 #include <openssl/SHA.h>
 #include <string.h>
