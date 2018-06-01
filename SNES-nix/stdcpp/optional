@@ -9,10 +9,8 @@ namespace std{
 
   typedef<typename T> class optional{
   private:
-    alignas(alignof(T)) union{ 
       unsigned char mem[sizeof(T)];
-      T val;
-    }data;
+      
     bool hasValue = false;
   public:
     optional(nullopt_t) noexcept{}
@@ -20,31 +18,35 @@ namespace std{
     optional(const optional<T>& c){
       if(c.hasValue){
         hasValue = true;
-        data = {.val=c.getValue()};
+        ::new(mem) T(reinterpret_cast<const T&>(o.mem));
       }
     }
     optional(optional<T>&& o){
       if(o.hasValue){
         hasValue = true;
-        data = {.val=std::move(o.getValue()};
+        ::new(mem) T(reinterpret_cast<T&&>(o.mem));
         o.hasValue = false;
       }
     }
     explicit template<typename U> optional(const optional<typename std::conditional<false,decltype(T(declval<U>())),U>::type>& c){
       if(c.hasValue){
         hasValue = true;
-        data = {.val=c.getValue()};
+        ::new(mem) T(reinterpret_cast<const U&>(o.mem));
       }
     }
     explicit template<typename U> optional(optional<typename std::conditional<false,decltype(T(declval<U>())),U>::type>&& o){
      if(o.hasValue){
         hasValue = true;
-        data = {.val=std::move(o.getValue()};
+        ::new(mem) T(reinterpret_cast<U&&>(o.mem));
         o.hasValue = false;
       }
     }
     template<typename... Args> optional(typename std::conditional<false,decltype(T(declval<Args>...())),in_place_t>::type t,Args&&... args){
-      data = {.val=T(std::forward<Args>(args)...)};
+      ::new(mem) T(std::forward<Args>(args)...);
+    }
+    ~optional(){
+      if(hasValue)
+        std::destory(reinterpret_cast<T*>(mem));
     }
   };
 
