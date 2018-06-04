@@ -2,6 +2,7 @@
 #define __optional_2018_05_23_16_50
 #include <type_traits>
 #include <utility>
+#include <memory>
 namespace std{
   struct nullopt_t{};
 
@@ -46,7 +47,7 @@ namespace std{
     }
     ~optional(){
       if(hasValue)
-        std::destory(reinterpret_cast<T*>(mem));
+        std::destory_at(reinterpret_cast<T*>(mem));
     }
   };
 
