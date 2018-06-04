@@ -1,6 +1,7 @@
 #ifndef __memory_2018_05_22_15_47
 #define __memory_2018_05_22_15_47
 #include <type_traits>
+#include <utility>
 namespace std{
   template<typename T> struct default_deleter{
     constexpr default_deleter() noexcept = default;
@@ -23,19 +24,35 @@ namespace std{
   private:
     typedef typename std::remove_reference<T>::type type;
     typedef type* pointer;
+    typedef type& reference;
+    typedef const type& const_reference;
+    typedef const type* const_pointer;
     
     pointer value;
     Deleter del;
   public:
-    unique_ptr(nullptr_t=nullptr):value(nullptr){}
-    explicit unique_ptr(pointer p):value(p){}
-    
+    unqiue_ptr()noexcept :value(nullptr){}
+    unique_ptr(nullptr_t)noexcept:value(nullptr){}
+    explicit unique_ptr(pointer p)noexcept:value(p){}
+    unique_ptr(pointer p,
+    unique_ptr(unquie_ptr&& u)noexcept:value(std::exchange(u.value,nullptr)){}
+    template
     ~unique_ptr(){
       if(value!=nullptr)
         del(value);
     }
+    
   };
-
+  template<typename T> void destroy_at(T* t){
+    t->~T();
+  }
+  
+  #pragma macros import("__addressof",lvalue) define("__addressof",lvalue)
+  template<typename T> constexpr T* addressof(T& t){
+    return __addressof(t);
+  }
+  #undef __addressof
+  template<typename T> constexpr T* addressof(T&&)=delete;
 };
 
 #endif
