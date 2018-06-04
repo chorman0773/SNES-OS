@@ -338,6 +338,29 @@ namespace std{
       template<typename T> struct can_contain_object<T _Imaginary,T _Complex>>:true_type{};
       template<size_t N> struct can_contain_object<bool,std::bitset<N>>:true_type{};
     };
+    
+    template<typename T,template<typename> typename trait> struct apply_to_base:echo_type<typename trait<T>::type>{};
+    template<typename T,template<typename> typename trait> struct apply_to_base<T&>:echo_type<typename trait<T>::type&>{};
+    template<typename T,template<typename> typename trait> struct apply_to_base<T&&>:echo_type<typename trait<T>::type&&>{};
+    template<typename T,template<typename> typename trait> struct apply_to_base<T*>:echo_type<typename trait<T>::type*>{};
+    template<typename T,template<typename> typename trait> struct apply_to_base<T[]>:echo_type<typename trait<T>::type[]>{};
+    template<typename T,size_T N,template<typename> typename trait> struct apply_to_base<T[N]>:echo_type<typename trait<T>::type[N]>{};
+    
+    template<typename T,size_t N,size_t I=0> struct set_extent<T>:echo_type<T>{};
+    template<typename T,size_t N,size_t I,size_t E> struct set_extent<T[E]>:echo_type<typename set_extent<T,N,I-1>::type[E]>{};
+    
+    template<typename T,size_t N,size_t e> struct set_extent<T[E],N,0>:echo_type<T[N]>{};
+    
+    template<typename T,typename A> struct is_pointer_to:false_type{};
+    template<typename T,typename A> struct is_pointer_to<T&,A>:is_pointer_to<T,A>{};
+    template<typename T,typename A> struct is_pointer_to<T,A&>:is_pointer_to<T,A>{};
+    template<typename T> struct is_pointer_to<T,T*>:true_type{};
+    template<typename T> struct is_pointer_to<T,T* const>:true_type{};
+    template<typename T> struct is_pointer_to<T,T* volatile>:true_type{};
+    template<typename T> struct is_pointer_to<T,T* const volatile>:true_type{};
+    template<typename T,typename A,typename=typename std::enable_if<std::is_same<T,decltype(*declval<A>())>::value>::type,
+        typename=typename std::enable_if<std::is_same<T*,decltype(declval<A>().operator->()>::value>::type
+        struct is_pointer_to<T,A>:true_type{};
   };
   
   #undef __expression_triat
