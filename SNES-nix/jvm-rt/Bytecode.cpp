@@ -254,8 +254,12 @@ namespace java{
 
 	class ThrowExcept final:public Instruction{
 	public:
-		void apply(Invocation&);
-		bool validate(ValidationState&);
+		void apply(Invocation& i){
+            
+        }
+		bool validate(ValidationState& v){
+         return v.canPop({ClassType(Class("java/lang/Throwable"))});   
+        }
 	};
 
 	class CheckCast final:public Instruction{
