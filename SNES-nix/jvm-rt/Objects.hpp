@@ -2,17 +2,22 @@
 #define __Objects_hpp_2018_05_22_16_22
 #include "References.hpp"
 #include "Types.hpp"
+#include "Classes.hpp"
 #include <string>
 using std::string;
 namespace java{
-  class Class;
-  class ReferenceType;
   namespace Objects{
     ReferencePtr newInstance(const Class&);
     bool instanceof(const ReferencePtr&,const Class&);
     void referenceClone(ReferencePtr&,const ReferencePtr&);
     const ReferencePtr& getClassObject(const Class&);
     size_t getAllocationSize(const Class&);
+    const ClassType ObjectType(Class("java/lang/Object"));
+    const ClassType StringType(Class("java/lang/String"));
+    const ClassType ThrowableType(Class("java/lang/Throwable"));
+    const ClassType EnumType(Class("java/lang/Enum"));
+    const ClassType AnnotationType(Class("java/lang/annotation/Annotation"));
+    const ClassType JClassType(Class("java/lang/Class"));
   };
   namespace Strings{
     ReferencePtr fromUtf8(const char*);
