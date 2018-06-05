@@ -33,6 +33,9 @@ using std::ostream;
  * major and minor, as well as reading and writing to Data Streams (and text streams).
  * The Version class provides both the read from (istream >>) and the write to (ostream <<) operators
  * To write in string form.
+ * In all supported C++ Standard Implementations the Version Class satisfies LiteralType.
+ * The Version class has constexpr Default, Copy, and move Constructors.
+ * In addition, both the decoding Constructor and the input constructor are constexpr.
  */
 class Version : public Hashable{
 private:
@@ -49,7 +52,7 @@ public:
 	 * This follows the sentry format for encoding versions (2-bytes BE, High-byte is Major version -1, Low-byte is minor version)
 	 * This Constructor should be used only when you are dealing with Embedded and Encoded Version constants
 	 */
-	constexpr Version(int i):major(i>>8),minor(i&0xff){}
+	constexpr explicit Version(int i):major(i>>8),minor(i&0xff){}
 	/*
 	 * Parses a given string in the form <Mj>.<mi> and produces a version given those 2 inputs.
 	 * Both Mj and mi must be valid integers, with Mj being between 1 and 256 and Mi being between 0 and 255
@@ -83,7 +86,9 @@ public:
 	 * Returns the version in encoded form.
 	 * The resultant value is 2-bytes consisting of major-1<<8|minor.
 	 */
-	int getEncoded()const;
+	constexpr int getEncoded()const{
+		return int(major)<<8|minor;	
+	}
 	/*
 	 * Obtains the Origin of this Version. The origin of a Version is equal to the Version
 	 * that has the same Major version, but a minor version of 0.
@@ -100,7 +105,9 @@ public:
 	 * Computes the hashcode of this Version.
 	 * This is effectively major*31+minor
 	 */
-	int32_t hashCode()const;
+	constexpr int32_t hashCode()const{
+		return int(major)*31+minor;	
+	}
 	/*
 	 * Compares this version with annother. A Version is the same if its Major version and
 	 * Minor version are exactly the same
