@@ -122,7 +122,7 @@ namespace java{
           i.pushObject(StringHelper::fromStlUtf8(stElement.getMethod().getSourceName()));
           i.pushInteger(stElement.getLineNumber());
           handle.invoke(i);
-          Arrays.storeObject(ret,elementValue,i++);
+          Arrays::storeReference(ret,i++,elementValue);
         }
         return reinterpret_cast<jobjectArray>(ret->getHandle());
       }
