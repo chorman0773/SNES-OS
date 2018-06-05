@@ -1,0 +1,17 @@
+#ifndef __experimental_array_2018_06_05_09_34
+#define __experimental_array_2018_06_05_09_34
+#include <array> //Not the experimental array file. thats <experimental/array>
+#include <utility>
+#pragma macros import("__enter_namespace",ns) define("__enter_namespace",ns)
+__enter_namespace(std::experimental) //Enters 2 namespaces at once. The namespaces are not propregated to including files
+
+namespace detail{
+  template<typename T,size_t N,size_t... Idxs> std::array<T,N> to_array_helper(T (&a)[n],std::index_sequence<Idxs...>){
+    return {a[Idxs]...};
+  }
+};
+
+template<typename T,size_t N> constexpr std::array<T,N> to_array(T (&a)[N]){
+  return detail::to_array_helper(a,std::make_index_sequence<N>());
+}
+#endif
