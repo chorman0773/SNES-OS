@@ -13,7 +13,63 @@ public:
 	virtual int hashCode()const = 0;
 };
 
-template<typename T> extern int32_t hashcode(T);
+ constexpr int32_t hashcode(char c){
+	return int(c)|(c&0x80!=0?0xffffff00:0);	 
+ }
+ constexpr int32_t hashcode(unsigned char c){
+ 	return int(c)&0xff;	 
+ }
+ constexpr int32_t hashcode(short s){
+	return int(s)|(s&0x8000!=0?0xffff0000:0);	 
+ }
+ constexpr int32_t hashcode(unsigned short s){
+	return int(s)&0xffff;	 
+ }
+ constexpr int32_t hashcode(int i){
+	return i;	 
+ }
+ constexpr int32_t hashcode(unsigned int i){
+	return int(i);	 
+ }
+ constexpr int32_t hashcode(long long l){
+	return (l>>32)^(l&0xffffffff);	 
+ }
+ constexpr int32_t hashcode(unsigned long long l){
+	return (l>>32)^(l&0xffffffff);	 
+ }
+ constexpr int32_t hashcode(float f){
+	union{
+	 float f1;
+         int bits;
+	};
+	f1 = f;
+	return hashcode(bits);
+ }
+ 
+ constexpr int32_t hashcode(double d){
+	 union{
+	  double d1;
+          long long bits;
+	 };
+	 d1 = d;
+	 return hashcode(Bits);
+ }
+
+ template<typename E,typename UType=typename std::underlying_type<E>::type> constexpr int32_t hashcode(E e){
+	union{
+	  E e1;
+          UType bits;
+	};
+	e1 = e;
+	return hashcode(bits);
+ }
+
+ constexpr int32_t hashcode(void* v){
+   return (int32_t)v;	 
+ }
+ constexpr int32_t hashcode(nullptr_t n){
+  return 0;	 
+ }
 
 using std::vector;
 
