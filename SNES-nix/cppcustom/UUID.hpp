@@ -3,6 +3,7 @@
 #include <string>
 #include <cstdint>
 #include <iostream>
+#include <functional>
 
 using std::string;
 using std::ostream;
@@ -39,15 +40,22 @@ public:
 	constexpr uint64_t getLow()const{
 	 return low;	
 	}
-	int32_t hashCode()const;
+	int32_t hashCode()const noexcept;
 	string toString()const;
-    explicit operator string()const;
+    	explicit operator string()const;
 };
 
 ostream& operator<<(ostream&,const UUID&);
 istream& operator>>(istream&,UUID&);
 string  operator+(const string&,const UUID&);
 
-
+namespace std{
+    template<> struct hash<UUID>{
+    public:
+	size_t operator()(const UUID& u)noexcept{
+	  return u.hashCode();	
+	}
+    };
+};
 
 #endif
