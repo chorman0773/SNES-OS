@@ -1,0 +1,45 @@
+#ifndef __source_location_2018_06_05_09_19
+#define __source_location_2018_06_05_09_19
+
+namespace detail{
+  template<char... cs> struct _source_location_string{
+    constexpr char str[] = {cs...,'\0'};
+    constexpr size_t size = sizeof...(cs)+1;
+  };
+};
+#pragma macros import("__instantiation_info",info) define("__instantiation_info",info)
+struct source_location{
+  const char* f;
+  const char* func;
+  size_t l;
+  size_t c;
+  constexpr source_location()=default;
+  constexpr source_location(const source_location&)=default;
+  constexpr source_location(source_location&&)=default;
+  
+  static constexpr template<typename fname=detail::_source_location_string<'__instantiation_info(file)'...>,
+    typedef funcname=detail::_source_location_string<'__instantiation_info(function)'...>, 
+    size_t line=__instantiation_info(line),size_t collum=__instantiation_info(collum)> source_location current() noexcept{
+      source_location ret;
+      ret.f = fname.str;
+      ret.func = funcname.str;
+      ret.l = line;
+      ret.c = collum;
+      return ret;
+    }
+   constexpr size_t line()const noexcept{
+    return l;
+   }
+   constexpr size_t collum()const noexcept{
+    return c;
+   }
+   constexpr const char* file_name()const noexcept{
+    return f;
+   }
+   constexpr const char* function_name()const noexcept{
+    return func;
+   }
+};
+#undef __instantiation_info
+
+#endif
