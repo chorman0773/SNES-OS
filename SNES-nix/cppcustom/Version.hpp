@@ -36,20 +36,20 @@ using std::ostream;
  */
 class Version : public Hashable{
 private:
-	int major;
-	int minor;
+	unsigned char major;
+	unsigned char minor;
 public:
 	/*
 	 * Constructs an unknown (null) version.
 	 * The default Version produced is 1.0
 	 */
-	constexpr Version():major(1),minor(0){}
+	constexpr Version():major(0),minor(0){}
 	/*
 	 * Obtains a version given in an encoded form (Ex. 0x0000).
 	 * This follows the sentry format for encoding versions (2-bytes BE, High-byte is Major version -1, Low-byte is minor version)
 	 * This Constructor should be used only when you are dealing with Embedded and Encoded Version constants
 	 */
-	Version(int);
+	constexpr Version(int i):major(i>>8),minor(i&0xff){}
 	/*
 	 * Parses a given string in the form <Mj>.<mi> and produces a version given those 2 inputs.
 	 * Both Mj and mi must be valid integers, with Mj being between 1 and 256 and Mi being between 0 and 255
@@ -59,23 +59,26 @@ public:
 	 * Obtains a version based on a given Major and minor version.
 	 * Major must be between 1 and 256 and minor must be between 0 and 255
 	 */
-	constexpr Version(int maj,int min):major((maj-1)&0xff+1),minor(min&0xff){}
-    
-    constexpr Version(const Version&)=default;
-    constexpr Version(Version&&)=default;
+	constexpr Version(int maj,int min):major((maj-1)&0xff),minor(min&0xff){}
+	
+	constexpr Version(const Version&)=default;
+	constexpr Version(Version&&)=default;
+	
+	constexpr Version& operator=(const Version&)=default;
+	constexpr Version& operator=(Version&&)=default
 	
 	/*
 	 * Gets the major version, ranging from 1 to 256
 	 */
 	constexpr int getMajor()const{
-     return major;   
-    }
+	  return int(major)+1;   
+    	}	
 	/*
 	 * Gets the minor version, ranging from 0 to 255
 	 */
 	constexpr int getMinor()const{
-     return minor;   
-    }
+     	  return minor;   
+    	}
 	/*
 	 * Returns the version in encoded form.
 	 * The resultant value is 2-bytes consisting of major-1<<8|minor.
@@ -86,8 +89,8 @@ public:
 	 * that has the same Major version, but a minor version of 0.
 	 */
 	constexpr Version getOrigin()const{
-     return Version(major,0);   
-    }
+	     return Version(major,0);   
+    	}
 	/*
 	 * Returns this Version as a string.
 	 * The Resultant String is in the form <major>.<minor>
@@ -103,37 +106,37 @@ public:
 	 * Minor version are exactly the same
 	 */
 	constexpr bool operator==(const Version& v)const{
-        return v.major==major&&v.minor==minor;
-    }
+        	return v.major==major&&v.minor==minor;
+    	}
 	/*
 	 * Compares this version with another. A Version is less-than another if its major version is less
 	 * than the other version's major version, or they share the same origin, and the first has a lower minor version
 	 */
 	constexpr bool operator<(const Version& v)const{
-        return major<v.major||(major==v.major&&minor<v.minor);
-    }
+        	return major<v.major||(major==v.major&&minor<v.minor);
+    	}
 	/*
 	 * Compares this version with another. A Version is Greater-than another if its major version is greater than
 	 * the other versions' major version, or they share the same origin, and the first version has a greater minor version
 	 */
 	constexpr bool operator>(const Version& v)const{
-        return major>v.major||(major==v.major&&minor>v.minor);
-    }
+       	 return major>v.major||(major==v.major&&minor>v.minor);
+    	}
 	/*
 	 * Compound Comparison <=
 	 */
 	constexpr bool operator<=(const Version& v)const{
-     return major <=v.major||(major==v.major&&minor<=v.minor);   
-    }
+     		return major <=v.major||(major==v.major&&minor<=v.minor);   
+ 	}
 	/*
 	 * Compound Comparison >=
 	 */
 	constexpr bool operator>=(const Version& v)const{
-        return major>=v.major||(major==v.major&&minor>=v.minor);
-    }
-    constexpr bool operator!=(const Version& v)const{
-        return major!=v.major||minor!=v.minor;
-    }
+        	return major>=v.major||(major==v.major&&minor>=v.minor);
+    	}
+        constexpr bool operator!=(const Version& v)const{
+		return major!=v.major||minor!=v.minor;
+    	}
 };
 
 /*
