@@ -228,6 +228,7 @@ namespace snesos{
         constexpr int major = 1;
         constexpr int minor = 0;
     };
+    struct origin{
         constexpr int major = 1;
         constexpr int minor = 0;
     };
