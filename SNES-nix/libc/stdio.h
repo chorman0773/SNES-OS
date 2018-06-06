@@ -80,7 +80,7 @@ int sscanf(char*,const char*,...);
 
 int getc(FILE*);
 int fgets(FILE*,int,char*);
-char* gets(char*);
+char* gets_s(char*,std::size_t);
 int getchar();
 int ungetc(int,FILE*);
 
