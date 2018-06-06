@@ -1,9 +1,9 @@
 #ifndef __syscalls_h_2018_06_06_10_18
 #define __syscalls_h_2018_06_06_10_18
-
 #ifdef __cplusplus
 extern "C"{
 #endif
+#include <os/types.h>
 
 #define PROC_Read 0x01
 #define PROC_Write 0x02
@@ -34,15 +34,7 @@ extern "C"{
 #define SEEK_CURR 1
 #define SEEK_END 2
   
-typedef int off_t;
 
-typedef int fd_t;
-
-typedef unsigned short pid_t;
-typedef unsigned short uid_t;
-typedef unsigned short gid_t;
-
-typedef void noreturn_t;
 
 
 /*
