@@ -33,7 +33,7 @@ process fork(int uid,int gid){
     int oldPid = currProcess->pid;
     process newProc;
     int i;
-    __asm__ volatile("SEI");
+    __asm__("SEI");
     newProc.pid = pid;
     newProc.uid = uid;
     newProc.gid = gid;
@@ -55,6 +55,7 @@ process fork(int uid,int gid){
     } else{
         oldPid = currThread->reg.eax;
         copyMemory(currProcess->pid,oldPid);
+        __asm__("CLI")
     }
 }
 
