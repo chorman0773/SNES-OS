@@ -24,8 +24,8 @@ typedef struct{
   GFXEnv* windowEnv;
 }terminal;
 
-typedef terminal* pterminal;
-typedef const terminal* cpterminal;
+typedef ptr(terminal) pterminal;
+typedef cptr(terminal) cpterminal;
 
 typedef struct{
   const terminal* term;
@@ -37,8 +37,8 @@ typedef struct{
   int maxLines;
 }termopts;
 
-typedef termopts* ptermopts
-typedef const termopts* cptermopts;
+typedef ptr(termopts) ptermopts
+typedef cptr(termopts) cptermopts;
 
 cpterminal getOwningTerminal();
 
@@ -50,6 +50,8 @@ pid_t newTerminalImage(const char*,int,fd_t stdfdOut[]);
 
 cptermopts getOptions(cpterminal,int);
 void setOptions(cpterminal,int,cptermopts);
+
+pterminal dupTerminal(cpterminal);
 
 #ifdef __cplusplus
 };
