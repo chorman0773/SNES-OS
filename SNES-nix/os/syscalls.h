@@ -24,6 +24,17 @@ extern "C"{
 #define FD_STDERR 2
 
 #define FD_NONE -1
+  
+#define F_LOCK 0
+#define F_ULOCK 1
+#define F_TEST 2
+#define F_TLOCK 3
+  
+#define SEEK_SET 0
+#define SEEK_CURR 1
+#define SEEK_END 2
+  
+typedef int off_t;
 
 typedef int fd_t;
 
@@ -93,6 +104,7 @@ fd_t openTemporary();
   If fork cannot execute, it will return 0 and errno is set.
 */
 pid_t fork();
+pid_t vfork();
 
 /*
   Detachs the current process from any controlling shell.
@@ -112,7 +124,43 @@ fd_t dup(fd_t);
 fd_t dup2(fd_t,fd_t);
 
 int pipe(fd_t[2]);
+  
+int lockf(fd_t,int,off_t);
+  
+off_t lseek(fd_t,off_t,int);
 
+int link(const char*,const char*);
+int symlink(const char*,const char*);
+  
+unsigned int sleep(unsigned int seconds);
+  
+void sync();
+
+int chdir(const char*);
+int chroot(const char*);
+
+int chown(const char*,uid_t,gid_t);
+int lchown(const char*,uid_t,gid_t);
+  
+pid_t getppid();
+pid_t getpid();
+pid_t getpgid();
+pid_t getpgrp();
+/*
+  Obtains the User Id of the User executing the program.
+  Note that this function may lose information. If the program is executed via sudo the uid is 0 (for root).
+*/
+uid_t getuid();
+gid_t getgid();
+
+  
+int unlink(const char*);
+int rmdir(const char*);
+  
+int execl(const char*,...);
+int execle(const char*,...);
+int execv(const char*,const char* const argv[]);
+int execve(const char*,const char* const argv[],const char*const envp[]);
 #ifdef __cplusplus
 };
 #endif
