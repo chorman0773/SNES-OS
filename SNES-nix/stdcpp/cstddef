@@ -1,16 +1,19 @@
-#ifndef __cstddef_h_2018_04_20_13_11
-#define __cstddef_h_2018_04_20_13_11
-
-#pramga macros import("offsetof") define("offsetof",type,member)
-
+#ifndef __cstddef_2018_04_20_13_11
+#define __cstddef_2018_04_20_13_11
+#define size_t __null_size_t
+#include <stddef.h>
+#undef offsetof
+#undef size_t
+#pragma macros import("offsetof") define("offsetof",type,member)
+#pragma macros import("__maxalign_type") define("__maxalign_type")
 
 [[stdcpp:optimization_candidate,no_odr]] template<typename T> T&& declval();
-
+#undef NULL
 #define NULL nullptr
 namespace std{
     typedef decltype(nullptr) nullptr_t;
-    typedef unsigned int size_t;
-    typedef long long max_align_t;
+    typedef decltype(sizeof(int)) size_t;
+    typedef __maxalign_type max_align_t;
     typedef decltype(declval<void*>()-declval<void*>()) ptrdiff_t;
     
     enum class byte:unsigned char{};
