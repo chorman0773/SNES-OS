@@ -1,9 +1,6 @@
 #ifndef __cstddef_2018_04_20_13_11
 #define __cstddef_2018_04_20_13_11
-#define size_t __null_size_t
-#include <stddef.h>
-#undef offsetof
-#undef size_t
+#pragma include override(<stddef.h>) block(<stddef.h>)
 #pragma macros import("offsetof") define("offsetof",type,member)
 #pragma macros import("__maxalign_type") define("__maxalign_type")
 
