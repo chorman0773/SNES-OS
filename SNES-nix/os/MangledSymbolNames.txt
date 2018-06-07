@@ -67,3 +67,5 @@ Smart& operator*()&&
 gives Smart::operator&@&$^*LSmart;
 and Smart::operator*@%$^*LSmart;
 
+Functions defined as noexcept are suffixed with #.
+
