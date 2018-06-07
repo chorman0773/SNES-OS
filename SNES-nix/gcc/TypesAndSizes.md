@@ -109,7 +109,7 @@
     <td>Q</td>
     <td colspan="2">-</td>
     <td>1</td>
-    <td>Custom type with the maximum alignment requirements possible</td>
-    <td>4</td>
+    <td>Custom type with the maximum standard alignment requirements possible</td>
+    <td>16</td>
   </tr>
 </table>
