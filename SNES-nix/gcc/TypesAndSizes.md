@@ -8,6 +8,7 @@
     <th>Alternate Type Descriptor</th>
     <th>Size</th>
     <th>underlying</th>
+    <th>Alignment</th>
   </tr>
   <tr>
     <td>char</td>
@@ -16,6 +17,7 @@
     <td>B</td>
     <td>1</td>
     <td>byte</td>
+    <td>2</td>
   </tr>
   <tr>
     <td>short</td>
@@ -24,6 +26,7 @@
     <td>A</td>
     <td>2</td>
     <td>hword</td>
+    <td>2</td>
   </tr>
   <tr>
     <td>int</td>
@@ -32,6 +35,7 @@
     <td>U</td>
     <td>4</td>
     <td>word</td>
+    <td>4</td>
   </tr>
   <tr>
     <td>long</td>
@@ -40,6 +44,7 @@
     <td>o</td>
     <td>8</td>
     <td>dword</td>
+    <td>4</td>
   </tr>
   <tr>
     <td>long long</td>
@@ -48,6 +53,7 @@
     <td>O</td>
     <td>8</td>
     <td>qword</td>
+    <td>4</td>
   </tr>
   <tr>
     <td>void*</td>
@@ -56,6 +62,7 @@
     <td>P</td>
     <td>4</td>
     <td>long address</td>
+    <td>4</td>
   </tr>
   <tr>
     <td>float</td>
@@ -63,6 +70,7 @@
     <td colspan="2">-</td>
     <td>4</td>
     <td>float word</td>
+    <td>4</td>
   </tr>
   <tr>
     <td>double</td>
@@ -70,6 +78,7 @@
     <td colspan="2">-</td>
     <td>8</td>
     <td>float dword</td>
+    <td>4</td>
   </tr>
   <tr>
     <td>long double</td>
@@ -77,6 +86,7 @@
     <td colspan="2">-</td>
     <td>8</td>
     <td>float qword</td>
+    <td>4</td>
   </tr>
   <tr>
     <td>nullptr_t (C++)</td>
@@ -84,6 +94,7 @@
     <td colspan="2">-</td>
     <td>1</td>
     <td>null address</td>
+    <td>1</td>
   </tr>
   <tr>
     <td>void</td>
@@ -91,6 +102,7 @@
     <td colspan="2">-</td>
     <td>0</td>
     <td>void</td>
+    <td>-</td>
   </tr>
   <tr>
     <td>max_allign_t(C++)</td>
@@ -98,5 +110,6 @@
     <td colspan="2">-</td>
     <td>1</td>
     <td>Custom type with the maximum alignment requirements possible</td>
+    <td>4</td>
   </tr>
 </table>
