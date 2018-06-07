@@ -5,7 +5,7 @@
 #else
 #define NULL 0
 #endif
-#define offsetof(type,field) &(((type)NULL)->field);
+#define offsetof(type,field) (size_t) &(((type)NULL)->field);
 
 typedef unsigned int size_t;
 
