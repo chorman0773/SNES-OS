@@ -79,11 +79,11 @@
     <td>float qword</td>
   </tr>
   <tr>
-    <td>nullptr_t</td>
+    <td>nullptr_t (C++)</td>
     <td>N</td>
     <td colspan="2">-</td>
-    <td>4</td>
-    <td>long address</td>
+    <td>1</td>
+    <td>null address</td>
   </tr>
   <tr>
     <td>void</td>
@@ -91,5 +91,12 @@
     <td colspan="2">-</td>
     <td>0</td>
     <td>void</td>
+  </tr>
+  <tr>
+    <td>max_allign_t(C++)</td>
+    <td>Q</td>
+    <td colspan="2">-</td>
+    <td>1</td>
+    <td>Custom type with the maximum alignment requirements possible</td>
   </tr>
 </table>
