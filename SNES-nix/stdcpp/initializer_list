@@ -1,0 +1,32 @@
+#ifndef __initialzier_list_2018_06_07_09_22
+#define __initialzier_list_2018_06_07_09_22
+#include <type_traits>
+#pragma macros import("__compiler_support") define group("__compiler_support")
+#pragma macros import("__compiler_support_ns") from("__compiler_support") define("__compiler_support_ns")
+#pragma macros import("__compiler_support_unknown",type) from("__compiler_support") define("__compiler_support_unknown")
+namespace std{
+#pragma namespace enter unqiue(__compiler_support_ns) //Because its a very special namespace also we need a unique inline namespace
+#include <integer_sequence>
+
+using std::integer_sequence;
+      template<typename T,size_t N,size_t... Idcs> using braced_init_list_helper = decltype({declval<T(&)[N]>()[Idcs]...});
+      template<typename T,size_t N,size_t... Idcs> braced_init_list_helper<T,N,Idcs...> braced_init_list_helper_function(integer_sequence<Idcs...>);
+      template<typename T,size_t N> using braced_init_list = decltype(braced_init_list_helper_function<T,N>(std::make_integer_sequence<N>());
+    };
+  };
+#pragma namespace exit unqiue(__compiler_support_ns) //The way that
+  template<typename T> struct initializer_list{
+  private:
+#pragma namespace enter using(__compiler_support_ns)
+    braced_init_list<T,__compiler_support_unknown(size_t)>& underlying;
+      //Note that __compiler_support_unknown makes the expression an incomplete type, but references are a thing.
+    template<size_t N> initializer_list(braced_init_list<T,N>& init_list):underlying(init_list){}
+#pragma namespace exit using(*)
+  public:
+    
+  };
+};
+#undef __compiler_support_ns
+#undef __compiler_support_unknown
+#undef __compiler_support //Need to undef last, since others are dependant on this.
+#endif
