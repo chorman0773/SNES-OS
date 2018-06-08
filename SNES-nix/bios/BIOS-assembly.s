@@ -1,12 +1,6 @@
 .no-elf-header ;When all linkages are satisfied the Binary generator will generate this as a raw SNES ROM. (without the normal header)
 		;IE something that can be burned onto an EPROM... 
-.alias sr    $70:0024
-.alias push  $70:002C
-.alias pop   $70:002D
-.alias ebp $70:0018
-.alias bp  $70:001A
-.alias esp $70:001C
-.alias sp  $70:001E
+
 .extern hblank
 .extern nmiRoutine
 
@@ -90,7 +84,14 @@ stop_execute:
 	JSL [$7e:1010]
 	STP
 	
-	
+syscall:
+    LDX $7e:0000
+    STZ $7e:0000
+    PHX ;Yup we are using the SNES Stack here.
+    JSL [$7e:1008]
+    PLX
+    STX $7e:0000
+    RTL
 	
 	.alias PROC_Read #$0001
 	.alias PROC_Write #$0002
