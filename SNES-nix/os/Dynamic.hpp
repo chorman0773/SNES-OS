@@ -105,12 +105,12 @@ public:
 
 
 template<typename Ret,typename... Args> class DynamicFunction<Ret(Args...,...)noexcept>{
-  private:
+private:
   static inline const string descriptor = (string(mangled_symbol_name) + ...)+"...#"s;
   symbol* sym = nullptr;
   DynamicLibrary* lib = nullptr;
 public:
-  DynamicFunction(){}
+  DynamicFunction()=default;
   DynamicFunction(const string& name,DynamicLibrary* lib):lib(lib){
     sym = lib->lookup(name+"@"+descriptor+"#");
     lib->checkType<Ret(Args...)>(sym);
@@ -121,6 +121,33 @@ public:
   }
 };
 
+template<typename Type> class DynamicField{
+private:
+  symbol* sym = nullptr;
+  DynamicLibrary* lib = nullptr;
+public:
+  DynamicField()=default;
+  DynamicField(const string& name,DynamicLibrary* lib):lib(lib){
+   sym = lib->lookup(name); 
+   lib->checkType<Type>(sym);
+  }
+  Type* operator&(){
+   return (Type*)lib->link(sym); 
+  }
+  operator Type&(){
+   return *((Type*)lib->link(sym));
+  }
+  operator const Type&()const{
+    return *((Type*)lib->link(sym));
+  }
+  const Type* operator&()const{
+   return (const Type*)lib->link(sym);
+  }
+};
+                                                                                     
+template<typename Type> class DynamicField<const Type>{
+  
+};
 
 template<typename Base> class DynamicClass{
   symbol* sym;
