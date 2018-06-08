@@ -35,9 +35,6 @@ public:
 };
 
 class DynamicLibrary{
-private:
-  ExecutibleHeader* header;
-  FILE* executible;
 public:
   void* link(symbol*);
   symbol* lookup(const string&);
@@ -199,20 +196,32 @@ template<class Base,typename=typename std::enable_if<std::is_polymorphic<Base>::
   const string& name;
   symbol* sym;
   DynamicLibrary* lib;
+  size_t size;
   /*
     Use void* for type erasure
   */
-  template<typename... Args> Base& constructTo(void* b,Args... args){
+  template<typename... Args> Base& constructTo(void* b,Args&&... args)const{
     string ctorName = name+"::{ctor}"s;
-    ctorSymbol = ctorName+"@*L"s+name+";"s+(string(mangled_symbol_name<Args>) + ...);
-    void(*ctor)(void*,Args...) = (void(*)(void*,Args...))lib->link(lib->lookup);
-    ctor(b,args...);
+    string ctorSymbol = ctorName+"@*L"s+name+";"s+(string(mangled_symbol_name<Args>) + ...);
+    void(*ctor)(void*,Args...) = (void(*)(void*,Args...))lib->link(lib->lookup(ctorSymbol);
+    if(ctor==nullptr)
+         throw bad_exce
+    ctor(b,std::forward<Args>(args)...);
+    return *(Base*)b;
+  }
+  void destroyAt(void* b)const{
+   string dtorName  = name+"::{dtor}@*L"s+name+";#"s;
+   void(*dtor)(void*) = (void(*)(void*))lib->link(lib->lookup(dtorName));
   }
 public:
   DynamicClass()=default;
   DynamicClass(const string& name,DynamicLibrary* lib):lib(lib),name(name){
-   
     sym = lib->lookup(name);
+    size = *((size_t*)(((char*)lib->link(sym))+6);
+  }
+  template<typename... Args> Base* construct(Args&&... args)const{
+    void* constructed = ::operator new(size);
+    return &constructTo(constructed,args...);
   }
 };
 
