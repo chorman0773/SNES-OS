@@ -6,6 +6,7 @@
 #pragma macros import("__cpp_typename",type) define("__cpp_typename",type)
 #pragma macros import("__cpp_from_qualified",typename) define("__cpp_from_qualified",typename)
 #pragma macros import("__cpp_to_qualified",typename) define("__cpp_to_qualified",typename)
+#pragma macros import("__cpp_qualified_classname",cl) define("__cpp_qualified_classname",cl)
 #include <cstdio>
 #include <functional>
 #include <string>
@@ -140,22 +141,78 @@ public:
   operator const Type&()const{
     return *((Type*)lib->link(sym));
   }
+  Type& get(){
+   return *((Type*)lib->link(sym)); 
+  }
+  const Type& get()const{
+   return *((const Type*)lib->link(sym));
+  }
   const Type* operator&()const{
    return (const Type*)lib->link(sym);
   }
+  template<typename T,typename Ret=decltype(declval<Type&>()=declval<T>())> Ret operator=(T&& t){
+   return  get()=t;
+  }
+  template<typename T,typename Ret=decltype(declval<Type&>()+declval<T>())> Ret operator+(T&& t){
+   return get()+t; 
+  }
+  template<typename T,typename Ret=decltype(declval<const Type&>()+declval<T>())> Ret operator+(T&& t)const{
+   return get()+t; 
+  }
+  template<typename T,typename Ret=decltype(declval<Type&>()+=declval<T>())> Ret operator+=(T&& t){
+   return get()+=t; 
+  }
+  template<typename T,typename Ret=decltype(declval<Type&>()-declval<T>())> Ret operator-(T&& t){
+   return get()-t; 
+  }
+  template<typename T,typename Ret=decltype(declval<const Type&>()-declval<T>())> Ret operator-(T&& t)const{
+   return get()-t; 
+  }
+  template<typename T,typename Ret=decltype(declval<Type&>()-=declval<T>())> Ret operator-=(T&& t){
+   return get()-=t; 
+  }
+  template<typename T,typename Ret=decltype(declval<Type&>()*declval<T>())> Ret operator*(T&& t){
+   return get()*t; 
+  }
+  template<typename T,typename Ret=decltype(declval<const Type&>()*declval<T>())> Ret operator*(T&& t)const{
+   return get()*t; 
+  }
+  template<typename T,typename Ret=decltype(declval<Type&>()*=declval<T>())> Ret operator*=(T&& t){
+   return get()*=t; 
+  }
+  template<typename T,typename Ret=decltype(declval<Type&>()/declval<T>())> Ret operator/(T&& t){
+   return get()-t; 
+  }
+  template<typename T,typename Ret=decltype(declval<const Type&>()/declval<T>())> Ret operator/(T&& t)const{
+   return get()-t; 
+  }
+  template<typename T,typename=decltype(T(declval<T&>()))> operator T(){
+   return (T)get(); 
+  }
+  template<typename T,typename=decltype(T(declval<const T&>()))> operator T()const{
+   return (T)get(); 
+  }
 };
                                                                                      
-template<typename Type> class DynamicField<const Type>{
-  
-};
 
-template<typename Base> class DynamicClass{
+template<class Base,typename=typename std::enable_if<std::is_polymorphic<Base>::value>::type> class DynamicClass{
+  const string& name;
   symbol* sym;
-  DynamicLibrary* library;
-  symbol* dtor;
+  DynamicLibrary* lib;
+  /*
+    Use void* for type erasure
+  */
+  template<typename... Args> Base& constructTo(void* b,Args... args){
+    string ctorName = name+"::{ctor}"s;
+    ctorSymbol = ctorName+"@*L"s+name+";"s+(string(mangled_symbol_name<Args>) + ...);
+    void(*ctor)(void*,Args...) = (void(*)(void*,Args...))lib->link(lib->lookup);
+    ctor(b,args...);
+  }
 public:
-  DynamicClass(){
-    
+  DynamicClass()=default;
+  DynamicClass(const string& name,DynamicLibrary* lib):lib(lib),name(name){
+   
+    sym = lib->lookup(name);
   }
 };
 
