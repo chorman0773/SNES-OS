@@ -220,6 +220,7 @@ template<class Base,typename=typename std::enable_if<std::is_polymorphic<Base>::
   void destroyAt(void* b)const{
    string dtorName  = name+"::{dtor}@*L"s+name+";#"s;
    void(*dtor)(void*) = (void(*)(void*))lib->link(lib->lookup(dtorName));
+   ::operator delete(b);
   }
 public:
   DynamicClass()=default;
