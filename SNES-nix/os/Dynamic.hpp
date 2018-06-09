@@ -223,6 +223,12 @@ public:
     void* constructed = ::operator new(size);
     return &constructTo(constructed,args...);
   }
+  void destroy(Base* b){
+   destroyAt(b);
+  }
+  template<typename... Args> Base* operator()(Args&&... args)const{
+   return construct(args...); 
+  }
 };
 
 #endif
