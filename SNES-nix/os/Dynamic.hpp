@@ -33,6 +33,8 @@ public:
       return ("Type Error: Expected "s+expectedType+" got "s+actualType).c_str();
     }
 };
+                                                                                     
+template<typename Base> class DynamicClass;
 
 class DynamicLibrary{
 public:
@@ -46,6 +48,12 @@ public:
     if(type!=inputType)
       throw illegal_type_exception<T>(unqualifiedType);
   }
+  template<typename Base> vector<DynamicClass<Base>> getAllExtending(){
+    vector<DynamicClass<Base>> ret;
+    
+    return ret;
+  }
+  
 };
 
 template<typename Type> class DynamicFunction;
@@ -205,7 +213,7 @@ template<class Base,typename=typename std::enable_if<std::is_polymorphic<Base>::
     string ctorSymbol = ctorName+"@*L"s+name+";"s+(string(mangled_symbol_name<Args>) + ...);
     void(*ctor)(void*,Args...) = (void(*)(void*,Args...))lib->link(lib->lookup(ctorSymbol);
     if(ctor==nullptr)
-         throw bad_exce
+         throw bad_type_exception<void(Args&&...)>("unknown");
     ctor(b,std::forward<Args>(args)...);
     return *(Base*)b;
   }
