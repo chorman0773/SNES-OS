@@ -47,11 +47,15 @@ cpterminal getTerminalImage(pid_t);
 void overlapTerminal(cpterminal);
 
 pid_t newTerminalImage(const char*,int,fd_t stdfdOut[]);
+  
+bool isDisplaying(cpterminal);
 
 cptermopts getOptions(cpterminal,int);
 void setOptions(cpterminal,int,cptermopts);
 
 pterminal dupTerminal(cpterminal);
+  
+int getch();
 
 #ifdef __cplusplus
 };
