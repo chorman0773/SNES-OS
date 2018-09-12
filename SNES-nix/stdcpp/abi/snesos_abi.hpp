@@ -35,12 +35,13 @@ struct extended_function_info{
 	std::size_t frameCleanupTableLength;
 	const char* name;
 	bool noexceptSpecification;
+	std::ptrdiff_t frameAutoLength;
 }__attribute__((packed));
 
 __attribute__((noreturn,requires_standalone_frame)) void __cxa_throwException(pc_address,const std::type_info*,void*,destructor);
 void __cxa_doUnwind(pc_address,const void*,std::size_t,pc_address);
-__attribute__((noreturn)) void __cxa_doCatch(pc_address,void*,const std::type_info*,const exception_handler_table_entry*,destructor);
-void __cxa_unwindEnd(pc_address);
+__attribute__((noreturn)) void __cxa_doCatch(pc_address,void*,const std::type_info*,const extended_function_info*,const exception_handler_table_entry*,destructor);
+__attribute__((noreturn)) void __cxa_unwindEnd(pc_address);
 void __cxa_destroy(void*,destructor);
 void __cxa_destroy_range(void*,std::size_t,std::size_t,destructor);
 void* __cxa_getStackFrame(std::size_t=0);
