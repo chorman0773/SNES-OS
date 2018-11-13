@@ -1,6 +1,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
-#include <os/Registers.h>
+
+#include "../../SNES-OS/os/Registers.h"
 
 
 void __va_start(va_list* list,void* last_arg,size_t size){

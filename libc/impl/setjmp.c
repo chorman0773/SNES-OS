@@ -1,5 +1,6 @@
 #include <setjmp.h>
-#include <os/Registers.h>
+
+#include "../../SNES-OS/os/Registers.h"
 
 int _setjmp(jmp_buf* buffer){
   eax = 0;

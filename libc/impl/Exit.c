@@ -1,6 +1,7 @@
 #include <stdlib.h>
-#include <os/Registers.h>
-#include <bios/BIOS.h>
+
+#include "../../SNES-OS/bios/BIOS.h"
+#include "../../SNES-OS/os/Registers.h"
 
 int atExit(void(*handler)(int)){
 	syscall(6,handler);
