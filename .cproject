@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="cdt.managedbuild.config.llvm.clang.win32.cygwin.lib.debug.1917823265">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.llvm.clang.win32.cygwin.lib.debug.1917823265" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+				<externalSettings>
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/SNES-OS"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/SNES-OS/Debug"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="SNES-OS" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.Cygwin_PE" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.llvm.clang.win32.cygwin.lib.debug.1917823265" name="Debug" parent="cdt.managedbuild.config.llvm.clang.win32.cygwin.lib.debug">
+					<folderInfo id="cdt.managedbuild.config.llvm.clang.win32.cygwin.lib.debug.1917823265." name="/" resourcePath="">
+						<toolChain id="cdt.managedbuild.toolchain.llvm.clang.win32.cygwin.lib.debug.2105811463" name="LLVM with Clang (Windows) (Cygwin)" superClass="cdt.managedbuild.toolchain.llvm.clang.win32.cygwin.lib.debug">
+							<targetPlatform archList="all" id="cdt.managedbuild.target.llvm.clang.win32.cygwin.platform.lib.debug.436052338" name="Debug Platform" osList="win32" superClass="cdt.managedbuild.target.llvm.clang.win32.cygwin.platform.lib.debug"/>
+							<builder buildPath="${workspace_loc:/SNES-OS}/Debug" id="cdt.managedbuild.target.llvm.clang.win32.cygwin.builder.lib.debug.1383145783" managedBuildOn="true" name="CDT Internal Builder.Debug" superClass="cdt.managedbuild.target.llvm.clang.win32.cygwin.builder.lib.debug"/>
+							<tool id="cdt.managedbuild.tool.llvm.clang.win32.cygwin.assembler.lib.debug.790946694" name="LLVM assembler" superClass="cdt.managedbuild.tool.llvm.clang.win32.cygwin.assembler.lib.debug"/>
+							<tool id="cdt.managedbuild.tool.llvm.archiver.base.873043928" name="LLVM archiver" superClass="cdt.managedbuild.tool.llvm.archiver.base"/>
+							<tool id="cdt.managedbuild.tool.llvm.clang.win32.cygwin.c.compiler.lib.debug.1355116476" name="LLVM Clang" superClass="cdt.managedbuild.tool.llvm.clang.win32.cygwin.c.compiler.lib.debug">
+								<option id="llvm.c_cpp.compiler.option.optimization.level.294411797" superClass="llvm.c_cpp.compiler.option.optimization.level" value="llvm.c_cpp.compiler.optimization.level.none" valueType="enumerated"/>
+								<option id="llvm.c_cpp.compiler.option.debugging.level.1886868058" superClass="llvm.c_cpp.compiler.option.debugging.level" value="llvm.c_cpp.compiler.debugging.level.max" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.llvm.c.compiler.input.247912131" superClass="cdt.managedbuild.tool.llvm.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.llvm.clang.win32.cygwin.cpp.compiler.lib.debug.548982999" name="LLVM Clang++" superClass="cdt.managedbuild.tool.llvm.clang.win32.cygwin.cpp.compiler.lib.debug">
+								<option id="llvm.c_cpp.compiler.option.optimization.level.120070607" superClass="llvm.c_cpp.compiler.option.optimization.level" value="llvm.c_cpp.compiler.optimization.level.none" valueType="enumerated"/>
+								<option id="llvm.c_cpp.compiler.option.debugging.level.1859963569" superClass="llvm.c_cpp.compiler.option.debugging.level" value="llvm.c_cpp.compiler.debugging.level.max" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.llvm.cpp.compiler.input.1204476103" superClass="cdt.managedbuild.tool.llvm.cpp.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.llvm.clang.win32.cygwin.c.linker.lib.debug.2079767771" name="LLVM Clang C linker" superClass="cdt.managedbuild.tool.llvm.clang.win32.cygwin.c.linker.lib.debug"/>
+							<tool id="cdt.managedbuild.tool.llvm.clang.win32.cygwin.cpp.linker.lib.debug.1534150978" name="LLVM Clang C++ linker" superClass="cdt.managedbuild.tool.llvm.clang.win32.cygwin.cpp.linker.lib.debug"/>
+						</toolChain>
+					</folderInfo>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+		<cconfiguration id="cdt.managedbuild.config.llvm.clang.win32.cygwin.lib.release.1188386891">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.llvm.clang.win32.cygwin.lib.release.1188386891" moduleId="org.eclipse.cdt.core.settings" name="Release">
+				<externalSettings>
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/SNES-OS"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/SNES-OS/Release"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="SNES-OS" srcPrefixMapping="" srcRootPath=""/>
+					</externalSetting>
+				</externalSettings>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.Cygwin_PE" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.staticLib,org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.llvm.clang.win32.cygwin.lib.release.1188386891" name="Release" parent="cdt.managedbuild.config.llvm.clang.win32.cygwin.lib.release">
+					<folderInfo id="cdt.managedbuild.config.llvm.clang.win32.cygwin.lib.release.1188386891." name="/" resourcePath="">
+						<toolChain id="cdt.managedbuild.toolchain.llvm.clang.win32.cygwin.lib.release.582421555" name="LLVM with Clang (Windows) (Cygwin)" superClass="cdt.managedbuild.toolchain.llvm.clang.win32.cygwin.lib.release">
+							<targetPlatform archList="all" id="cdt.managedbuild.target.llvm.clang.win32.cygwin.platform.lib.release.1998513811" name="Debug Platform" osList="win32" superClass="cdt.managedbuild.target.llvm.clang.win32.cygwin.platform.lib.release"/>
+							<builder buildPath="${workspace_loc:/SNES-OS}/Release" id="cdt.managedbuild.target.llvm.clang.win32.cygwin.builder.lib.release.709686623" managedBuildOn="true" name="CDT Internal Builder.Release" superClass="cdt.managedbuild.target.llvm.clang.win32.cygwin.builder.lib.release"/>
+							<tool id="cdt.managedbuild.tool.llvm.clang.win32.cygwin.assembler.lib.release.1660037957" name="LLVM assembler" superClass="cdt.managedbuild.tool.llvm.clang.win32.cygwin.assembler.lib.release"/>
+							<tool id="cdt.managedbuild.tool.llvm.archiver.base.1066148946" name="LLVM archiver" superClass="cdt.managedbuild.tool.llvm.archiver.base"/>
+							<tool id="cdt.managedbuild.tool.llvm.clang.win32.cygwin.c.compiler.lib.release.98814803" name="LLVM Clang" superClass="cdt.managedbuild.tool.llvm.clang.win32.cygwin.c.compiler.lib.release">
+								<option id="llvm.c_cpp.compiler.option.optimization.level.1384690079" superClass="llvm.c_cpp.compiler.option.optimization.level" value="llvm.c_cpp.compiler.optimization.level.most" valueType="enumerated"/>
+								<option id="llvm.c_cpp.compiler.option.debugging.level.101238871" superClass="llvm.c_cpp.compiler.option.debugging.level" value="llvm.c_cpp.compiler.debugging.level.none" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.llvm.c.compiler.input.711945536" superClass="cdt.managedbuild.tool.llvm.c.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.llvm.clang.win32.cygwin.cpp.compiler.lib.release.80466918" name="LLVM Clang++" superClass="cdt.managedbuild.tool.llvm.clang.win32.cygwin.cpp.compiler.lib.release">
+								<option id="llvm.c_cpp.compiler.option.optimization.level.1416877170" superClass="llvm.c_cpp.compiler.option.optimization.level" value="llvm.c_cpp.compiler.optimization.level.most" valueType="enumerated"/>
+								<option id="llvm.c_cpp.compiler.option.debugging.level.545829575" superClass="llvm.c_cpp.compiler.option.debugging.level" value="llvm.c_cpp.compiler.debugging.level.none" valueType="enumerated"/>
+								<inputType id="cdt.managedbuild.tool.llvm.cpp.compiler.input.100953286" superClass="cdt.managedbuild.tool.llvm.cpp.compiler.input"/>
+							</tool>
+							<tool id="cdt.managedbuild.tool.llvm.clang.win32.cygwin.c.linker.lib.release.157440053" name="LLVM Clang C linker" superClass="cdt.managedbuild.tool.llvm.clang.win32.cygwin.c.linker.lib.release"/>
+							<tool id="cdt.managedbuild.tool.llvm.clang.win32.cygwin.cpp.linker.lib.release.1748390127" name="LLVM Clang C++ linker" superClass="cdt.managedbuild.tool.llvm.clang.win32.cygwin.cpp.linker.lib.release"/>
+						</toolChain>
+					</folderInfo>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="SNES-OS.cdt.managedbuild.target.llvm.clang.win32.cygwin.lib.1509451007" name="Static Library" projectType="cdt.managedbuild.target.llvm.clang.win32.cygwin.lib"/>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+</cproject>
