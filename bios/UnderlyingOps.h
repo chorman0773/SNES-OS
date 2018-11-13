@@ -1,5 +1,6 @@
 #ifndef __Ops32_h_2018_06_08_13_08
 #define __Ops32_h_2018_06_08_13_08
+#include <bios/BIOS.h>
 #ifdef __cplusplus
 extern "C"{
 #endif
@@ -69,8 +70,6 @@ __bioscall void moveRaxToRbx();
 __bioscall void moveRbxToRax();
 __bioscall void swapRaxAndRbx();
 
-__bioscall void frameEnter(unsigned short);
-__bioscall void frameExit();
 
 __bioscall int add32(int,int);
 __bioscall int sub32(int,int);

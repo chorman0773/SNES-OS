@@ -4,13 +4,16 @@
 #define PROC_Read 0x0001
 #define PROC_Write 0x0002
 #define PROC_Exec 0x0010
-#ifdef __cplusplus
-#define __nativedecl [[bios_call]] extern "C"
+
+#define __nativecall __attribute__((convention(bios)))
+
+#ifndef __cplusplus
+#define __nativedecl extern"C" __nativecall
 #else
-#define __nativedecl __attribute__((bios_call))
+#define __nativedecl __nativecall
 #endif
 
-
+#define __bioscall __nativedecl
 
 
 __nativedecl void setpermissions(void*,unsigned int,unsigned short);

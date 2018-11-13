@@ -1,8 +1,8 @@
-#include <os/terminal.h>
+#include <os/terminals.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include "../../../SNES-OS/os/syscalls.h"
+#include <os/syscalls.h>
 
 
 void printHelp(const char* pname){
@@ -17,11 +17,11 @@ void printHelp(const char* pname){
   
 }
 
-void deatchAsync(){
+void deatchAsync(const char* pname){
  fd_t descriptors[3];
  pid_t termPid;
  detach();
- termPid = mkTerminalImg("/bin/sh",getUid(),getGid(),descriptors());
+ termPid = mkTerminalImg(pname,getUid(),getGid(),descriptors());
  dup2(descriptors[0],FD_STDIN);
  dup2(descriptors[1],FD_STDOUT);
  dup2(descriptors[2],FD_STDERR);
@@ -36,7 +36,7 @@ int main(int argc,const char** argv,const char* envp[]){
   const char* helpStr = "help";
   const char* prgName = argv[0];
   int affectedOpt;
-  const char* arg
+  const char* arg;
   int i;
   bool detach = false, async = false;
   if(argc==1){
@@ -67,13 +67,13 @@ int main(int argc,const char** argv,const char* envp[]){
       return 1;
       apply_opt:
       if(affectedOpt==0)
-        deatch = true;
+        detach = true;
       else if(affectedOpt==1)
         async = true;
     }else{
       if(async)
         deatchAsync();
-      else if(detached)
+      else if(detach)
         deatch();
       return execve(arg,argc+1,envp);
     }

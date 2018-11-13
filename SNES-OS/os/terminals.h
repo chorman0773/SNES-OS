@@ -7,22 +7,19 @@ extern "C"{
 
 #include <stdbool.h>
 #include "../../SNES-OS/os/types.h"
-#include <os/gfxenv.h>
 
 #define TERM_STDIN 0
 #define TERM_STDOUT 1
 #define TERM_STDERR 2
+
 
 typedef struct{
   pid_t terminalPid;
   pid_t executingProcess;
   uid_t owner;
   gid_t ownerId;
-  devno_t stdinDev;
-  devno_t stdoutDev;
-  devno_t stderrDev;
-  bool hasTerminalWindow;
-  GFXEnv* windowEnv;
+  size_t nfds;
+  fd_t fds[];
 }terminal;
 
 typedef ptr(terminal) pterminal;
@@ -30,7 +27,7 @@ typedef cptr(terminal) cpterminal;
 
 typedef struct{
   const terminal* term;
-  bool echoChars;
+  uint8_t flags;
   int writeX;
   int writeY;
   int writeColor;
@@ -38,7 +35,7 @@ typedef struct{
   int maxLines;
 }termopts;
 
-typedef ptr(termopts) ptermopts
+typedef ptr(termopts) ptermopts;
 typedef cptr(termopts) cptermopts;
 
 cpterminal getOwningTerminal();
