@@ -2,6 +2,8 @@
 High level Linux-like OS Running on a SNES. The OS is intended to be used with a custom cart with the bios and other requirements.
 The exact requirements are not known at this time. Minor Modifications to the SNES Hardware may be necessary.
 
+A modified version of SNES9x will be developed at some point to act as a "Virtual Machine", emulating all of the memory features provided by external components.
+
 Copyright (C) 2018  Connor Horman
 
 This program is free software: you can redistribute it and/or modify
