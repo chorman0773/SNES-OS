@@ -16,6 +16,11 @@ typedef unsigned short sig_atomic_t;
 #define SIGWRITEV 18
 #define SIGEXECV 19
 
+void _Shandle_none(int);
+
+#define SIG_DEF NULL
+#define SIG_NONE _Shandle_none
+
 int signal(void (*)(int));
 
 void raise(int);

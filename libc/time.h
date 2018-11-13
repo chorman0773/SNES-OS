@@ -21,7 +21,7 @@ struct tm {
 
 typedef unsigned int clock_t;
 
-typedef long time_t;
+typedef long long time_t;
 
 double difftime(time_t,time_t);
 
