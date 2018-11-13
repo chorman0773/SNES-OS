@@ -9,7 +9,7 @@ extern "C"{
 #define HUGE_VALF (float)__builtin_infinity()
 #define HUGE_VALL (long double)__builtin_infinity()
 
-#deifne INFINITY __builtin_infinity()
+#define INFINITY __builtin_infinity()
 
 #pragma macros hide(1)
 #define __builtin_overload(name,...) double name(double);
