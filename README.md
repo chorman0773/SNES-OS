@@ -1,6 +1,6 @@
 # SNES-OS
 High level Linux-like OS Running on a SNES. The OS is intended to be used with a custom cart with the bios and other requirements.
-The exact requirements are not known at this time.
+The exact requirements are not known at this time. Minor Modifications to the SNES Hardware may be necessary.
 
 Copyright (C) 2018  Connor Horman
 
