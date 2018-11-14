@@ -16,11 +16,10 @@ typedef void noreturn_t;
 #define ptr(type) type*
 #define cptr(type) const type*
 
-#ifdef __cplusplus
 #define withv(type) volatile type
 #define withcv(type) const volatile type
 #define vptr(type) volatile type*
 #define cvptr(type) const volatile type*
-#endif
+
 
 #endif

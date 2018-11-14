@@ -2,7 +2,7 @@
 #define __stdbool_h_2018_04_17_13_18
 #include <stddef.h>
 #ifndef __cplusplus
-#define bool int
+#define bool _Bool
 #define true 1
 #define false 0
 #endif
